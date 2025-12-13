@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,dynamodb,lambda
+      - DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    volumes:
+      - "./scripts:/docker-entrypoint-initaws.d" # Runs init scripts automatically
+
+  backend:
+    image: python:3.9-slim
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+      - BUCKET_NAME=image-uploads
+      - TABLE_NAME=ImageMetadata
+    command: >
+      sh -c "pip install -r requirements.txt && python api_server.py"
+    depends_on:
+      - localstack
+
+  frontend:
+    image: node:18-alpine
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    command: sh -c "echo 'Frontend placeholder' && tail -f /dev/null" # Placeholder as requested
