@@ -6,6 +6,15 @@
 ![React](https://img.shields.io/badge/React-18.3-blue)
 ![Python](https://img.shields.io/badge/Python-3.8%2B-green)
 
+## 🚀 Live Demo
+
+| Service | URL |
+|---------|-----|
+| **Frontend** | [Search & Gallery App (Netlify)](https://unloadin-cloud.netlify.app) |
+| **Backend** | [API Server (Render)](https://unloadin-cloud-1.onrender.com) |
+
+> **Note**: The backend on Render builds may take ~50 seconds to spin up from sleep.
+
 ## 📋 Table of Contents
 
 - [Overview](#overview)
