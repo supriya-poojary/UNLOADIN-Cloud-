@@ -2,7 +2,8 @@
 Simple Flask API server for local development.
 This wraps the Lambda handlers to provide HTTP endpoints.
 """
-from flask import Flask, request, jsonify
+import datetime
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import os
 import sys
@@ -11,6 +12,7 @@ import sys
 sys.path.insert(0, '/app')
 
 from src.app import handlers
+from src.utils import local_adapter
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend
@@ -19,6 +21,26 @@ CORS(app)  # Enable CORS for frontend
 os.environ.setdefault('BUCKET_NAME', 'image-uploads')
 os.environ.setdefault('TABLE_NAME', 'ImageMetadata')
 os.environ.setdefault('AWS_ENDPOINT_URL', 'http://localstack:4566')
+os.environ.setdefault('USE_LOCAL_STORAGE', 'true') # Default to local storage for easier setup
+
+@app.route('/local-store/<object_name>', methods=['PUT'])
+def local_upload(object_name):
+    content = request.get_data()
+    # Ensure it's not a directory traversal attempt (simple check)
+    if '..' in object_name or '/' in object_name:
+        return '', 400
+    local_adapter.save_file_content(object_name, content)
+    return '', 200
+
+@app.route('/local-store/<object_name>', methods=['GET'])
+def local_download(object_name):
+    # Ensure it's not a directory traversal attempt
+    if '..' in object_name or '/' in object_name:
+        return '', 400
+    path = local_adapter.get_file_content(object_name)
+    if path:
+        return send_file(path)
+    return '', 404
 
 @app.route('/generate-upload-url', methods=['POST', 'OPTIONS'])
 def generate_upload_url():
@@ -27,7 +49,13 @@ def generate_upload_url():
     
     event = {'body': request.get_data(as_text=True)}
     response = handlers.generate_upload_url_handler(event, None)
-    return jsonify(response.get('body', {})), response.get('statusCode', 200)
+    
+    import json
+    body = response.get('body', '{}')
+    if isinstance(body, str):
+        body = json.loads(body)
+    
+    return jsonify(body), response.get('statusCode', 200)
 
 @app.route('/save-metadata', methods=['POST', 'OPTIONS'])
 def save_metadata():
@@ -36,7 +64,13 @@ def save_metadata():
     
     event = {'body': request.get_data(as_text=True)}
     response = handlers.save_metadata_handler(event, None)
-    return jsonify(response.get('body', {})), response.get('statusCode', 200)
+    
+    import json
+    body = response.get('body', '{}')
+    if isinstance(body, str):
+        body = json.loads(body)
+        
+    return jsonify(body), response.get('statusCode', 200)
 
 @app.route('/images', methods=['GET', 'OPTIONS'])
 def list_images():

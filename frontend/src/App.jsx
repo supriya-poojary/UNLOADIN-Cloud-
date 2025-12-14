@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import Home from '@/routes/Home';
 import Login from '@/routes/Login';
 import Dashboard from '@/routes/Dashboard';
+import HealthCheck from '@/components/HealthCheck';
 
 function AnimatedRoutes() {
     const location = useLocation();
@@ -22,6 +23,7 @@ function AnimatedRoutes() {
 function App() {
     return (
         <Router>
+            <HealthCheck />
             <AnimatedRoutes />
             <Toaster
                 position="bottom-right"

@@ -11,8 +11,14 @@ def get_s3_client():
     # Config signature_version='s3v4' is important for presigned URLs
     return boto3.client('s3', config=Config(signature_version='s3v4'))
 
+from src.utils import local_adapter
+import os
+
 def generate_presigned_upload_url(bucket_name, object_name, expiration=3600):
     """Generate a presigned URL to upload a file to S3."""
+    if os.environ.get('USE_LOCAL_STORAGE'):
+        return local_adapter.generate_local_upload_url('http://localhost:8000', object_name)
+
     s3_client = get_s3_client()
     try:
         response = s3_client.generate_presigned_url('put_object',
@@ -26,6 +32,9 @@ def generate_presigned_upload_url(bucket_name, object_name, expiration=3600):
 
 def generate_presigned_download_url(bucket_name, object_name, expiration=3600):
     """Generate a presigned URL to download a file from S3."""
+    if os.environ.get('USE_LOCAL_STORAGE'):
+        return local_adapter.generate_local_download_url('http://localhost:8000', object_name)
+
     s3_client = get_s3_client()
     try:
         response = s3_client.generate_presigned_url('get_object',
@@ -39,6 +48,9 @@ def generate_presigned_download_url(bucket_name, object_name, expiration=3600):
 
 def delete_s3_object(bucket_name, object_name):
     """Delete an object from an S3 bucket."""
+    if os.environ.get('USE_LOCAL_STORAGE'):
+        return local_adapter.delete_file(object_name)
+
     s3_client = get_s3_client()
     try:
         s3_client.delete_object(Bucket=bucket_name, Key=object_name)

@@ -10,8 +10,14 @@ def get_dynamodb_resource():
     """Returns a boto3 DynamoDB resource."""
     return boto3.resource('dynamodb')
 
+import os
+from src.utils import local_adapter
+
 def save_metadata(table_name, item):
     """Save metadata item to DynamoDB."""
+    if os.environ.get('USE_LOCAL_STORAGE'):
+        return local_adapter.save_metadata(item)
+
     dynamodb = get_dynamodb_resource()
     table = dynamodb.Table(table_name)
     try:
@@ -40,6 +46,9 @@ def query_images(table_name, user_id=None, tag=None, start_date=None, end_date=N
     - tag (GSI query)
     - date range (SK condition or FilterExpression)
     """
+    if os.environ.get('USE_LOCAL_STORAGE'):
+        return local_adapter.query_images(user_id, tag)
+
     dynamodb = get_dynamodb_resource()
     table = dynamodb.Table(table_name)
     
@@ -101,6 +110,9 @@ def query_images(table_name, user_id=None, tag=None, start_date=None, end_date=N
 
 def delete_metadata_item(table_name, user_id, image_id):
     """Delete metadata item from DynamoDB."""
+    if os.environ.get('USE_LOCAL_STORAGE'):
+        return local_adapter.delete_metadata(user_id, image_id)
+
     dynamodb = get_dynamodb_resource()
     table = dynamodb.Table(table_name)
     try:

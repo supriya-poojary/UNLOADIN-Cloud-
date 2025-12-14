@@ -1,0 +1,122 @@
+[
+  {
+    "user_id": "user_123",
+    "image_id": "62d6edcc-74e9-4699-adda-d0076c647864-3001767.jpg",
+    "tag": "waste",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "62d6edcc-74e9-4699-adda-d0076c647864-3001767.jpg",
+    "upload_time": "2025-12-14T07:17:03.329138",
+    "created_at": "2025-12-14T07:17:03.329138"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "9bdbb4d4-198f-4f24-afd9-f7ba3083ce5d-istockphoto-1796374503-612x612.jpg",
+    "tag": "uncategorized",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "9bdbb4d4-198f-4f24-afd9-f7ba3083ce5d-istockphoto-1796374503-612x612.jpg",
+    "upload_time": "2025-12-14T07:17:35.143418",
+    "created_at": "2025-12-14T07:17:35.143418"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "45204032-c59e-4770-b8d9-919173b6cd44-pexels-sevenstormphotography-381739.jpg",
+    "tag": "uncategorized",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "45204032-c59e-4770-b8d9-919173b6cd44-pexels-sevenstormphotography-381739.jpg",
+    "upload_time": "2025-12-14T07:27:34.017256",
+    "created_at": "2025-12-14T07:27:34.017256"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "24733892-2211-4cce-9e31-fad52c526132-pexels-pixabay-47547.jpg",
+    "tag": "uncategorized",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "24733892-2211-4cce-9e31-fad52c526132-pexels-pixabay-47547.jpg",
+    "upload_time": "2025-12-14T07:37:55.754943",
+    "created_at": "2025-12-14T07:37:55.754943"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "595ddbba-d504-4429-a634-dffc4a8f7928-pexels-archbob-63330.jpg",
+    "tag": "uncategorized",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "595ddbba-d504-4429-a634-dffc4a8f7928-pexels-archbob-63330.jpg",
+    "upload_time": "2025-12-14T07:38:28.332990",
+    "created_at": "2025-12-14T07:38:28.332990"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "3e64a4bc-d3e3-434f-8b5f-f501768b607a-pexels-lisatchok-2226006.jpg",
+    "tag": "bird",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "3e64a4bc-d3e3-434f-8b5f-f501768b607a-pexels-lisatchok-2226006.jpg",
+    "upload_time": "2025-12-14T07:41:49.429368",
+    "created_at": "2025-12-14T07:41:49.430003"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "0c9ce4da-1300-4891-b254-29a62cb51a19-pexels-ashuphotography-1406506.jpg",
+    "tag": "uncategorized",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "0c9ce4da-1300-4891-b254-29a62cb51a19-pexels-ashuphotography-1406506.jpg",
+    "upload_time": "2025-12-14T07:47:19.144566",
+    "created_at": "2025-12-14T07:47:19.144566"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "8b8256f0-83ad-4cad-b336-db8524da0af9-pexels-pixabay-416179.jpg",
+    "tag": "uncategorized",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "8b8256f0-83ad-4cad-b336-db8524da0af9-pexels-pixabay-416179.jpg",
+    "upload_time": "2025-12-14T07:47:36.270930",
+    "created_at": "2025-12-14T07:47:36.270930"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "bf81cbb6-88e2-4cd8-992b-aed5c9920d9c-pexels-pixabay-45201.jpg",
+    "tag": "uncategorized",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "bf81cbb6-88e2-4cd8-992b-aed5c9920d9c-pexels-pixabay-45201.jpg",
+    "upload_time": "2025-12-14T07:47:49.917340",
+    "created_at": "2025-12-14T07:47:49.917340"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "ceee2dbd-8282-434a-a416-ff8bb8585c52-pexels-pixabay-36846.jpg",
+    "tag": "uncategorized",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "ceee2dbd-8282-434a-a416-ff8bb8585c52-pexels-pixabay-36846.jpg",
+    "upload_time": "2025-12-14T07:50:07.490115",
+    "created_at": "2025-12-14T07:50:07.490115"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "8ad412f2-b662-4e77-bbab-971290e40cdf-Gemini_Generated_Image_9kmfx69kmfx69kmf (1).png",
+    "tag": "uncategorized",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/png",
+    "s3_key": "8ad412f2-b662-4e77-bbab-971290e40cdf-Gemini_Generated_Image_9kmfx69kmfx69kmf (1).png",
+    "upload_time": "2025-12-14T07:52:06.674911",
+    "created_at": "2025-12-14T07:52:06.674911"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "eab1df38-1c1d-492d-9d2f-85642a7d1af0-pexels-pixabay-61157.jpg",
+    "tag": "uncategorized",
+    "description": "Uploaded via web on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "eab1df38-1c1d-492d-9d2f-85642a7d1af0-pexels-pixabay-61157.jpg",
+    "upload_time": "2025-12-14T07:52:21.348917",
+    "created_at": "2025-12-14T07:52:21.348917"
+  }
+]

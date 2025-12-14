@@ -7,6 +7,46 @@ import PremiumBackground from '@/components/PremiumBackground';
 import { motion } from 'framer-motion';
 import { LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { UserMinus } from 'lucide-react';
+
+const LogoutButton = ({ onLogout }) => {
+    const [isLeaving, setIsLeaving] = useState(false);
+
+    const handleClick = () => {
+        setIsLeaving(true);
+        setTimeout(onLogout, 1200); // Wait for animation
+    };
+
+    return (
+        <button
+            onClick={handleClick}
+            className="group relative flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-sm overflow-hidden"
+        >
+            <motion.div
+                initial={{ x: 0, opacity: 1 }}
+                animate={isLeaving ? { x: 100, opacity: 0 } : { x: 0, opacity: 1 }}
+                transition={{ duration: 1, ease: "easeInOut" }}
+                className="flex items-center gap-2"
+            >
+                {/* UserMinus implies a person leaving/logging out, fits 'person moving out' better than LogOut door */}
+                <UserMinus className="w-4 h-4" />
+                <span>Logout</span>
+            </motion.div>
+
+            {/* Optional: Person walking out indicator? */}
+            {isLeaving && (
+                <motion.div
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 100, opacity: [0, 1, 0] }}
+                    transition={{ duration: 1 }}
+                    className="absolute inset-0 flex items-center justify-center text-blue-400"
+                >
+                    <UserMinus className="w-5 h-5" />
+                </motion.div>
+            )}
+        </button>
+    );
+};
 
 export default function Dashboard() {
     const [showConfetti, setShowConfetti] = useState(false);
@@ -34,12 +74,7 @@ export default function Dashboard() {
                 <div className="text-xl font-bold font-sans tracking-tighter text-white">
                     Cloud<span className="text-blue-400">Box</span>
                 </div>
-                <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-sm"
-                >
-                    <LogOut className="w-4 h-4" /> Logout
-                </button>
+                <LogoutButton onLogout={handleLogout} />
             </nav>
 
             <main className="relative z-10 flex flex-col items-center pt-32 pb-20 px-4">
