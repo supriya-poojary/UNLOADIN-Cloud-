@@ -56,8 +56,9 @@
 ### Frontend Features
 
 - ✅ **3D Landing Page**: Animated spheres, particles, and interactive elements
-- ✅ **Drag & Drop Upload**: Intuitive file upload with progress tracking
-- ✅ **Live Gallery**: Real-time image grid with filters
+- ✅ **Batch Upload**: Drag & drop multiple images with per-file progress tracking
+- ✅ **Advanced Gallery**: Real-time grid with direct download, sharing, and backup options
+- ✅ **Creative Filters**: Apply real-time effects (B&W, Sepia, Vintage) to images
 - ✅ **Tag Management**: Add multiple tags per image
 - ✅ **Responsive Design**: Mobile-first, works on all devices
 - ✅ **Dark Mode**: Premium dark theme with glassmorphism

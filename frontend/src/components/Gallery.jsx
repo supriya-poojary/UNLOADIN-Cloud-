@@ -7,11 +7,11 @@ import toast from 'react-hot-toast';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const FILTER_PRESETS = [
-    { name: 'Normal', class: '' },
-    { name: 'B&W', class: 'grayscale' },
-    { name: 'Sepia', class: 'sepia' },
-    { name: 'Vintage', class: 'contrast-125 sepia-[.3] hue-rotate-[-10deg]' },
-    { name: 'Cool', class: 'hue-rotate-[30deg] contrast-110' }
+    { name: 'Normal', class: '', css: '' },
+    { name: 'B&W', class: 'grayscale', css: 'grayscale(100%)' },
+    { name: 'Sepia', class: 'sepia', css: 'sepia(100%)' },
+    { name: 'Vintage', class: 'contrast-125 sepia-[.3] hue-rotate-[-10deg]', css: 'contrast(125%) sepia(30%) hue-rotate(-10deg)' },
+    { name: 'Cool', class: 'hue-rotate-[30deg] contrast-110', css: 'hue-rotate(30deg) contrast(110%)' }
 ];
 
 export default function Gallery({ refreshTrigger }) {
@@ -72,27 +72,71 @@ export default function Gallery({ refreshTrigger }) {
         }
     };
 
-    const handleForceDownload = async (e, url, filename) => {
+    const handleForceDownload = async (e, url, filename, filterCss) => {
         e.stopPropagation();
         const toastId = toast.loading("Downloading...");
         try {
             const response = await fetch(url);
             const blob = await response.blob();
-            const blobUrl = window.URL.createObjectURL(blob);
 
-            const a = document.createElement('a');
-            a.href = blobUrl;
-            a.download = filename || 'download.jpg'; // Force download attribute
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(blobUrl);
-            document.body.removeChild(a);
+            // If no filter, direct download
+            if (!filterCss) {
+                const blobUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = filename || 'download.jpg';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(blobUrl);
+                document.body.removeChild(a);
+                toast.success("Download started", { id: toastId });
+                return;
+            }
 
-            toast.success("Download started", { id: toastId });
+            // Apply filter using Canvas
+            const img = new Image();
+            const objectUrl = window.URL.createObjectURL(blob);
+
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+
+                // Apply the filter
+                ctx.filter = filterCss;
+                ctx.drawImage(img, 0, 0);
+
+                // Determine mime type from filename
+                const mimeType = filename?.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+
+                canvas.toBlob((newBlob) => {
+                    const blobUrl = window.URL.createObjectURL(newBlob);
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = filename || (mimeType === 'image/png' ? 'download.png' : 'download.jpg');
+                    document.body.appendChild(a);
+                    a.click();
+
+                    // Cleanup
+                    window.URL.revokeObjectURL(blobUrl);
+                    window.URL.revokeObjectURL(objectUrl);
+                    document.body.removeChild(a);
+                    toast.success("Download started", { id: toastId });
+                }, mimeType, 0.95);
+            };
+
+            img.onerror = () => {
+                window.URL.revokeObjectURL(objectUrl);
+                throw new Error("Failed to load image for processing");
+            };
+
+            img.src = objectUrl;
+
         } catch (err) {
             console.error(err);
             toast.error("Download failed", { id: toastId });
-            // Fallback to open
+            // Fallback
             window.open(url, '_blank');
         }
     };
@@ -170,7 +214,10 @@ export default function Gallery({ refreshTrigger }) {
                             {/* Primary Actions Row */}
                             <div className="flex gap-3">
                                 <button
-                                    onClick={(e) => handleForceDownload(e, src, item.original_filename)}
+                                    onClick={(e) => {
+                                        const activePreset = FILTER_PRESETS.find(p => p.class === activeFilter);
+                                        handleForceDownload(e, src, item.original_filename, activePreset?.css);
+                                    }}
                                     className="p-2.5 rounded-full bg-white/10 hover:bg-blue-500/20 text-white hover:text-blue-400 border border-white/10 transition-all transform hover:scale-110"
                                     title="Download (JPG/PNG)"
                                 >
