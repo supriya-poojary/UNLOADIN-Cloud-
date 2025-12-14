@@ -42,8 +42,8 @@ def local_download(object_name):
         return send_file(path)
     return '', 404
 
-@app.route('/generate-upload-url', methods=['POST', 'OPTIONS'])
-def generate_upload_url():
+@app.route('/images/upload', methods=['POST', 'OPTIONS'])
+def upload_image():
     if request.method == 'OPTIONS':
         return '', 204
     
@@ -55,21 +55,6 @@ def generate_upload_url():
     if isinstance(body, str):
         body = json.loads(body)
     
-    return jsonify(body), response.get('statusCode', 200)
-
-@app.route('/save-metadata', methods=['POST', 'OPTIONS'])
-def save_metadata():
-    if request.method == 'OPTIONS':
-        return '', 204
-    
-    event = {'body': request.get_data(as_text=True)}
-    response = handlers.save_metadata_handler(event, None)
-    
-    import json
-    body = response.get('body', '{}')
-    if isinstance(body, str):
-        body = json.loads(body)
-        
     return jsonify(body), response.get('statusCode', 200)
 
 @app.route('/images', methods=['GET', 'OPTIONS'])
@@ -88,12 +73,13 @@ def list_images():
     
     return jsonify(body), response.get('statusCode', 200)
 
-@app.route('/generate-download-url', methods=['GET', 'OPTIONS'])
-def generate_download_url():
+@app.route('/images/<id>/download', methods=['GET', 'OPTIONS'])
+def download_image(id):
     if request.method == 'OPTIONS':
         return '', 204
     
-    event = {'queryStringParameters': request.args.to_dict()}
+    # Map path param to query param for handler
+    event = {'queryStringParameters': {'id': id}}
     response = handlers.generate_download_url_handler(event, None)
     
     import json
@@ -103,12 +89,16 @@ def generate_download_url():
     
     return jsonify(body), response.get('statusCode', 200)
 
-@app.route('/delete', methods=['DELETE', 'OPTIONS'])
-def delete_image():
+@app.route('/images/<id>', methods=['DELETE', 'OPTIONS'])
+def delete_image(id):
     if request.method == 'OPTIONS':
         return '', 204
     
-    event = {'queryStringParameters': request.args.to_dict()}
+    # Map path param to query param, preserve other query params like user_id
+    params = request.args.to_dict()
+    params['id'] = id
+    event = {'queryStringParameters': params}
+    
     response = handlers.delete_image_handler(event, None)
     
     import json

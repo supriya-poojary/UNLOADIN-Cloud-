@@ -65,34 +65,42 @@ export default function UploadZone({ onUploadComplete }) {
             // For simplicity and progress tracking, we'll do sequential here but fast
             for (const file of files) {
                 try {
-                    // 1. Get Presigned URL
-                    const uploadUrlRes = await axios.post(`${API_URL}/generate-upload-url`, {
+                    // 1. Unified Upload: Get Presigned URL & Save Metadata
+                    const finalTags = [...tags];
+                    if (tagInput.trim() && !finalTags.includes(tagInput.trim())) {
+                        finalTags.push(tagInput.trim());
+                    }
+
+                    const initRes = await axios.post(`${API_URL}/images/upload`, {
                         filename: file.name,
-                        filetype: file.type
+                        content_type: file.type,
+                        file_size: file.size,
+                        user_id: 'user_123',
+                        tags: finalTags,
+                        tag: finalTags[0] || 'uncategorized',
+                        description: `Batch upload on ${new Date().toLocaleDateString()}`
                     });
-                    const { upload_url, object_name } = uploadUrlRes.data;
+
+                    const { upload_url } = initRes.data;
 
                     // 2. Upload to S3
                     await axios.put(upload_url, file, {
-                        headers: { 'Content-Type': file.type }
-                    });
-
-                    // 3. Save Metadata
-                    await axios.post(`${API_URL}/save-metadata`, {
-                        user_id: 'user_123',
-                        image_id: object_name,
-                        tag: tags[0] || 'uncategorized',
-                        tags: tags,
-                        description: `Batch upload on ${new Date().toLocaleDateString()}`,
-                        content_type: file.type,
-                        original_filename: file.name
+                        headers: { 'Content-Type': file.type },
+                        onUploadProgress: (progressEvent) => {
+                            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                            // This progress is for the current file.
+                            // To show overall progress, we'd need a more complex calculation
+                            // involving `completed` files and current file's progress.
+                            // For now, we'll just update based on completed files.
+                        }
                     });
 
                     completed++;
                     setProgress((completed / total) * 100);
-
+                    toast.success(`Uploaded: ${file.name}`);
                 } catch (err) {
-                    console.error(`Failed to upload ${file.name}`, err);
+                    console.error(err);
+                    toast.error(`Failed to upload ${file.name}`);
                     failed.push(file.name);
                 }
             }
@@ -111,6 +119,7 @@ export default function UploadZone({ onUploadComplete }) {
             setTimeout(() => {
                 setFiles([]);
                 setTags([]);
+                setTagInput('');
                 setUploading(false);
                 setProgress(0);
             }, 1000);
@@ -131,9 +140,9 @@ export default function UploadZone({ onUploadComplete }) {
                     isDragActive ? "bg-white/10 ring-2 ring-blue-500/50" : "hover:bg-white/10"
                 )}
             >
+                <input {...getInputProps()} />
                 {files.length === 0 ? (
                     <div {...getRootProps()} className="flex flex-col items-center justify-center h-64 cursor-pointer">
-                        <input {...getInputProps()} />
                         <div className="p-4 rounded-full bg-blue-500/10 mb-4 animate-pulse">
                             <UploadCloud className="w-10 h-10 text-blue-400" />
                         </div>

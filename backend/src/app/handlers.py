@@ -13,23 +13,55 @@ TABLE_NAME = os.environ.get('TABLE_NAME')
 
 def generate_upload_url_handler(event, context):
     """
-    POST /generate-upload-url
-    Body: { "filename": "...", "filetype": "..." }
+    POST /images/upload (formerly /generate-upload-url)
+    Body: { "filename": "...", "content_type": "...", "user_id": "...", "tags": [], "description": "..." }
     """
     try:
         body = json.loads(event.get('body', '{}'))
         filename = body.get('filename')
+        user_id = body.get('user_id')
         
         if not filename:
             return common.create_error_response(400, "Missing filename")
-
-        object_name = f"{uuid.uuid4()}-{filename}"
+        
+        # Metadata logic integrated here for Unified Upload
+        # Requirement: "image_id (ISO timestamp based)" so it is sortable for range queries.
+        timestamp = datetime.datetime.utcnow().isoformat()
+        object_name = f"{timestamp}_{uuid.uuid4()}-{filename}"
         
         # S3 Presigned URL
         presigned_url = s3_utils.generate_presigned_upload_url(BUCKET_NAME, object_name)
-        
         if not presigned_url:
              return common.create_error_response(500, "Failed to generate upload URL")
+
+        # Save Metadata if user_id is provided (Unified Flow)
+        if user_id:
+            tag = body.get('tag')
+            tags = body.get('tags', [])
+            if tag and tag not in tags:
+                tags.append(tag)
+            
+            # Ensure at least one tag is present for the primary GSI if legacy code relies on it
+            primary_tag = tags[0] if tags else (tag or 'uncategorized')
+
+            item = {
+                'user_id': user_id,
+                'image_id': object_name,
+                'tag': primary_tag,
+                'tags': tags,
+                'description': body.get('description', ''),
+                'content_type': body.get('content_type', 'application/octet-stream'),
+                'file_size': body.get('file_size', 0),
+                's3_key': object_name,
+                'upload_time': timestamp,
+                'original_filename': filename
+            }
+            
+            if not dynamo_utils.save_metadata(TABLE_NAME, item):
+                logger.error(f"Failed to save metadata for {object_name}")
+                # We could return 500, but the URL was generated. 
+                # Ideally, we save metadata first? No, doesn't matter much for presigned.
+                return common.create_error_response(500, "Failed to save metadata")
 
         return common.create_response(200, {
             "upload_url": presigned_url,

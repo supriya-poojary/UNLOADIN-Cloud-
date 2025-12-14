@@ -112,6 +112,47 @@ For detailed architecture diagrams, see [docs/architecture.md](docs/architecture
 - **Testing**: pytest, moto, requests
 - **API Spec**: OpenAPI 3.0
 
+---
+
+## 🔌 API Endpoints
+The backend provides a RESTful API compliant with the company's specifications:
+
+### Upload
+- **`POST /images/upload`**
+  - **Description**: Generates a presigned S3 upload URL and saves initial metadata.
+  - **Body**: `{ "filename": "example.jpg", "content_type": "image/jpeg", "user_id": "...", "tags": ["nature"] }`
+  - **Response**: `{ "upload_url": "...", "image_id": "..." }`
+
+### List Images
+- **`GET /images`**
+  - **Description**: Lists images with support for filtering.
+  - **Query Params**: `user_id`, `tag`, `start_date`, `end_date`.
+  - **Response**: `{ "images": [ ... ] }`
+
+### Download
+- **`GET /images/{id}/download`**
+  - **Description**: Returns a presigned URL for viewing or downloading the image.
+  - **Response**: `{ "download_url": "..." }`
+
+### Delete
+- **`DELETE /images/{id}`**
+  - **Description**: Removes the image file from S3 and metadata from DynamoDB.
+  - **Query Params**: `user_id` (required for ownership verification).
+
+---
+
+## 💾 Metadata Schema
+Image metadata is stored in DynamoDB with the following structure:
+- **`image_id`**: Unique identifier (Sort Key).
+- **`user_id`**: Owner identifier (Partition Key).
+- **`s3_key`**: Key used in S3 bucket.
+- **`content_type`**: MIME type of the file.
+- **`upload_time`**: ISO 8601 timestamp.
+- **`tags`**: List of strings (e.g., `["vacation", "beach"]`).
+- **`description`**: Optional text description.
+
+---
+
 ### Frontend
 - **Framework**: React 18.3 + Vite
 - **Styling**: Tailwind CSS
@@ -716,7 +757,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-**Built with ❤️ by Supriya S Pojjary**
+**Built with ❤️ by Supriya S Poojary**
 
 *For questions, issues, or collaboration opportunities, reach out at supriyaspoojary26@gmail.com
 

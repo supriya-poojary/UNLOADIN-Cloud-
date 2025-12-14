@@ -118,5 +118,55 @@
     "s3_key": "7e7d8781-e87e-487c-9399-2c37cb1d9ba0-pexels-pixabay-70080.jpg",
     "upload_time": "2025-12-14T08:27:10.348371",
     "created_at": "2025-12-14T08:27:10.349369"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "ddd70552-77be-4f71-a554-9a1c7f943649-pexels-couleur-2317904.jpg",
+    "tag": "uncategorized",
+    "description": "Batch upload on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "ddd70552-77be-4f71-a554-9a1c7f943649-pexels-couleur-2317904.jpg",
+    "upload_time": "2025-12-14T08:44:28.787178",
+    "created_at": "2025-12-14T08:44:28.787178"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "1f245bae-2b78-4532-8b0a-95049d1291ab-pexels-souvenirpixels-414612.jpg",
+    "tag": "uncategorized",
+    "description": "Batch upload on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "1f245bae-2b78-4532-8b0a-95049d1291ab-pexels-souvenirpixels-414612.jpg",
+    "upload_time": "2025-12-14T08:45:41.651515",
+    "created_at": "2025-12-14T08:45:41.651515"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "f3ed1457-767d-4db6-ae9b-d357ec16c277-pexels-pixabay-162203.jpg",
+    "tag": "uncategorized",
+    "description": "Batch upload on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "f3ed1457-767d-4db6-ae9b-d357ec16c277-pexels-pixabay-162203.jpg",
+    "upload_time": "2025-12-14T08:49:29.404196",
+    "created_at": "2025-12-14T08:49:29.404196"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "c822e3f4-0fc1-4c07-9fca-cf5cfbc7e39a-pexels-archbob-63330.jpg",
+    "tag": "uncategorized",
+    "description": "Batch upload on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "c822e3f4-0fc1-4c07-9fca-cf5cfbc7e39a-pexels-archbob-63330.jpg",
+    "upload_time": "2025-12-14T09:06:25.924989",
+    "created_at": "2025-12-14T09:06:25.924989"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "43a7dd10-a1c7-47a2-97da-0fad76a42a63-pexels-pixabay-34231.jpg",
+    "tag": "deer",
+    "description": "Batch upload on 12/14/2025",
+    "content_type": "image/jpeg",
+    "s3_key": "43a7dd10-a1c7-47a2-97da-0fad76a42a63-pexels-pixabay-34231.jpg",
+    "upload_time": "2025-12-14T09:15:18.639714",
+    "created_at": "2025-12-14T09:15:18.639714"
   }
 ]

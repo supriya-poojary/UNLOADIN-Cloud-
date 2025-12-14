@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Trash2, Share2, Link as LinkIcon, Edit, RotateCcw, Cloud, Check, Filter } from 'lucide-react';
+import { Download, Trash2, Share2, Link as LinkIcon, Edit, RotateCcw, Cloud, Check, Filter, X, Search } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -14,9 +14,25 @@ const FILTER_PRESETS = [
     { name: 'Cool', class: 'hue-rotate-[30deg] contrast-110', css: 'hue-rotate(30deg) contrast(110%)' }
 ];
 
+const formatDate = (isoString) => {
+    if (!isoString) return 'Unknown Date';
+    return new Date(isoString).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+};
+
 export default function Gallery({ refreshTrigger }) {
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    // View States
+    const [sortBy, setSortBy] = useState('newest'); // 'newest', 'oldest'
+    const [viewMode, setViewMode] = useState('grid'); // 'grid', 'grouped' (tags)
+    const [showDuplicates, setShowDuplicates] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const fetchImages = async () => {
         try {
@@ -46,8 +62,8 @@ export default function Gallery({ refreshTrigger }) {
 
         try {
             toast.loading("Deleting...");
-            await axios.delete(`${API_URL}/delete`, {
-                params: { id: imageId, user_id: 'user_123' }
+            await axios.delete(`${API_URL}/images/${imageId}`, {
+                params: { user_id: 'user_123' }
             });
             toast.dismiss();
             toast.success("Image deleted");
@@ -158,6 +174,20 @@ export default function Gallery({ refreshTrigger }) {
         toast.success("Image Restored (Simulation)");
     };
 
+
+
+    const handleRename = (e, imageId, currentName) => {
+        e.stopPropagation();
+        const newName = prompt("Enter new name:", currentName);
+        if (newName && newName !== currentName) {
+            // Simulate rename
+            setImages(prev => prev.map(img =>
+                img.image_id === imageId ? { ...img, original_filename: newName } : img
+            ));
+            toast.success("Image renamed successfully");
+        }
+    };
+
     const GalleryImageCard = ({ item }) => {
         const [src, setSrc] = useState(null);
         const [showActions, setShowActions] = useState(false);
@@ -167,7 +197,7 @@ export default function Gallery({ refreshTrigger }) {
         useEffect(() => {
             const getUrl = async () => {
                 try {
-                    const res = await axios.get(`${API_URL}/generate-download-url`, { params: { id: item.image_id } });
+                    const res = await axios.get(`${API_URL}/images/${item.image_id}/download`);
                     setSrc(res.data.download_url);
                 } catch {
                     setSrc(null);
@@ -195,21 +225,22 @@ export default function Gallery({ refreshTrigger }) {
                         <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
                         <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
                         <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-                        <span className="ml-auto text-[10px] text-slate-500 font-mono truncate max-w-[100px]">
-                            {item.original_filename || 'IMG.css'}
-                        </span>
                     </div>
 
                     {/* Image Area */}
                     <div className="relative h-[calc(100%-2rem)] p-2">
                         <img
+                            onClick={() => setSelectedImage({ src, ...item })}
                             src={src}
-                            className={`w-full h-full object-cover rounded-lg transition-all duration-300 ${activeFilter}`}
+                            className={`w-full h-full object-cover rounded-lg transition-all duration-300 cursor-pointer ${activeFilter}`}
                             alt=""
                         />
 
                         {/* Hover Overlay Actions */}
-                        <div className={`absolute inset-0 bg-black/70 backdrop-blur-[2px] flex flex-col items-center justify-center gap-4 transition-opacity duration-200 ${showActions ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+                        <div
+                            onClick={() => setSelectedImage({ src, ...item })}
+                            className={`absolute inset-0 bg-black/70 backdrop-blur-[2px] flex flex-col items-center justify-center gap-4 transition-opacity duration-200 cursor-pointer ${showActions ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                        >
 
                             {/* Primary Actions Row */}
                             <div className="flex gap-3">
@@ -241,6 +272,12 @@ export default function Gallery({ refreshTrigger }) {
 
                             {/* Secondary Actions Row */}
                             <div className="flex gap-2">
+                                <button
+                                    onClick={(e) => handleRename(e, item.image_id, item.original_filename)}
+                                    className="px-3 py-1.5 rounded-md bg-white/5 hover:bg-white/10 text-xs text-slate-300 border border-white/10 flex items-center gap-1 transition-colors"
+                                >
+                                    <Edit className="w-3 h-3" /> Rename
+                                </button>
                                 <button
                                     onClick={handleBackup}
                                     className="px-3 py-1.5 rounded-md bg-white/5 hover:bg-white/10 text-xs text-slate-300 border border-white/10 flex items-center gap-1 transition-colors"
@@ -279,13 +316,22 @@ export default function Gallery({ refreshTrigger }) {
                                 )}
                             </AnimatePresence>
 
-                            <span className="absolute bottom-3 text-[10px] text-slate-500 bg-black/50 px-2 py-1 rounded-full">
+
+
+                        </div>
+
+                        {/* Tag Label - Always Visible */}
+                        <span className="absolute bottom-3 left-3 flex flex-col items-start pointer-events-none z-10">
+                            <span className="text-[10px] text-slate-200 bg-black/60 px-2 py-1 rounded-full backdrop-blur-sm shadow-sm mb-1">
                                 {item.tag || '#untagged'}
                             </span>
-                        </div>
+                            <span className="text-[9px] text-slate-400 bg-black/40 px-1.5 py-0.5 rounded-sm backdrop-blur-sm">
+                                {formatDate(item.upload_time)}
+                            </span>
+                        </span>
                     </div>
                 </div>
-            </motion.div>
+            </motion.div >
         );
     };
 
@@ -300,6 +346,47 @@ export default function Gallery({ refreshTrigger }) {
                     {/* Refresh/Sort controls could go here */}
                 </div>
 
+                {/* View Controls */}
+                <div className="flex flex-col md:flex-row gap-4 mb-6 sticky top-20 z-30 py-2 bg-black/80 backdrop-blur-md rounded-lg px-4 border border-white/10">
+                    {/* Search Bar */}
+                    <div className="relative flex-1 min-w-[200px]">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input
+                            type="text"
+                            placeholder="Search by name or tag..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-md py-1.5 pl-9 pr-4 text-sm text-slate-200 focus:outline-none focus:border-blue-500/50 transition-colors"
+                        />
+                    </div>
+
+                    <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+                        <button
+                            onClick={() => setSortBy(prev => prev === 'newest' ? 'oldest' : 'newest')}
+                            className="flex items-center gap-2 text-xs font-medium text-slate-300 hover:text-white px-3 py-1.5 rounded-md hover:bg-white/5 transition-colors whitespace-nowrap"
+                        >
+                            <RotateCcw className={`w-3 h-3 ${sortBy === 'newest' ? '' : 'rotate-180 transition-transform'}`} />
+                            {sortBy === 'newest' ? 'Recent' : 'Oldest'}
+                        </button>
+
+                        <button
+                            onClick={() => setViewMode(prev => prev === 'grid' ? 'grouped' : 'grid')}
+                            className={`flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-md transition-colors whitespace-nowrap ${viewMode === 'grouped' ? 'text-blue-400 bg-blue-500/10' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
+                        >
+                            <Filter className="w-3 h-3" />
+                            {viewMode === 'grouped' ? 'Grouped' : 'Categorize'}
+                        </button>
+
+                        <button
+                            onClick={() => setShowDuplicates(prev => !prev)}
+                            className={`flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-md transition-colors whitespace-nowrap ${showDuplicates ? 'text-yellow-400 bg-yellow-500/10' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
+                        >
+                            <Download className="w-3 h-3 rotate-45" />
+                            {showDuplicates ? 'Duplicates' : 'Find Dups'}
+                        </button>
+                    </div>
+                </div>
+
                 {loading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {[1, 2, 3, 4].map(i => (
@@ -307,23 +394,137 @@ export default function Gallery({ refreshTrigger }) {
                         ))}
                     </div>
                 ) : (
-                    <motion.div
-                        layout
-                        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-20"
-                    >
-                        <AnimatePresence>
-                            {images.map((img) => (
-                                <GalleryImageCard key={img.image_id} item={img} />
-                            ))}
-                        </AnimatePresence>
-                    </motion.div>
-                )}
+                    <div className="pb-20">
+                        {(() => {
+                            // 1. Sort
+                            let processed = [...images].sort((a, b) => {
+                                const tA = new Date(a.upload_time || 0).getTime();
+                                const tB = new Date(b.upload_time || 0).getTime();
+                                return sortBy === 'newest' ? tB - tA : tA - tB;
+                            });
 
-                {!loading && images.length === 0 && (
-                    <div className="text-center py-20 text-slate-500">
-                        <p>No images yet. Upload some above!</p>
+                            // 1.5 Search Filter
+                            if (searchQuery) {
+                                const q = searchQuery.toLowerCase();
+                                processed = processed.filter(img =>
+                                    (img.original_filename || '').toLowerCase().includes(q) ||
+                                    (img.tag || '').toLowerCase().includes(q) ||
+                                    (img.tags && Array.isArray(img.tags) && img.tags.some(t => t.toLowerCase().includes(q)))
+                                );
+                            }
+
+                            // 2. Filter Duplicates
+                            if (showDuplicates) {
+                                // Find items that appear > 1 time based on Filename + Size
+                                const counts = {};
+                                processed.forEach(img => {
+                                    // Use size if available, otherwise fallback to just name (backward compat)
+                                    const key = img.file_size ? `${img.original_filename}_${img.file_size}` : img.original_filename;
+                                    counts[key] = (counts[key] || 0) + 1;
+                                });
+                                processed = processed.filter(img => {
+                                    const key = img.file_size ? `${img.original_filename}_${img.file_size}` : img.original_filename;
+                                    return counts[key] > 1;
+                                });
+
+                                if (processed.length === 0) {
+                                    return <div className="text-center text-slate-500 py-10">No potentially duplicate images found.</div>;
+                                }
+                            }
+
+                            // 3. Render Views
+                            if (viewMode === 'grouped' && !showDuplicates) {
+                                // Group by Tag
+                                const groups = {};
+                                processed.forEach(img => {
+                                    const tag = img.tag || 'Uncategorized';
+                                    if (!groups[tag]) groups[tag] = [];
+                                    groups[tag].push(img);
+                                });
+
+                                return (
+                                    <div className="flex flex-col gap-10">
+                                        {Object.entries(groups).map(([tag, groupImages]) => (
+                                            <div key={tag}>
+                                                <h3 className="text-xl font-semibold text-white mb-4 pl-2 border-l-4 border-blue-500">
+                                                    {tag} <span className="text-sm font-normal text-slate-500 ml-2">({groupImages.length})</span>
+                                                </h3>
+                                                <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                                    <AnimatePresence>
+                                                        {groupImages.map(img => <GalleryImageCard key={img.image_id} item={img} />)}
+                                                    </AnimatePresence>
+                                                </motion.div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                );
+                            } else {
+                                // Normal Grid
+                                return (
+                                    <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                        <AnimatePresence>
+                                            {processed.map(img => <GalleryImageCard key={img.image_id} item={img} />)}
+                                        </AnimatePresence>
+                                    </motion.div>
+                                );
+                            }
+                        })()}
                     </div>
                 )}
+
+
+
+                {/* Full Screen Image Modal */}
+                <AnimatePresence>
+                    {selectedImage && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedImage(null)}
+                            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer"
+                        >
+                            <motion.div
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                exit={{ scale: 0.9, opacity: 0 }}
+                                className="relative max-w-5xl max-h-[90vh] rounded-2xl overflow-hidden"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <img
+                                    src={selectedImage.src}
+                                    alt="Full View"
+                                    className="w-full h-full max-h-[90vh] object-contain rounded-xl"
+                                />
+
+                                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                                    <div className="flex justify-between items-end">
+                                        <div>
+                                            <h3 className="text-white text-xl font-bold mb-1">
+                                                {selectedImage.original_filename || 'Untitled'}
+                                            </h3>
+                                            <div className="flex gap-2">
+                                                <span className="inline-block px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-sm border border-blue-500/20 backdrop-blur-sm">
+                                                    {selectedImage.tag || '#untagged'}
+                                                </span>
+                                                <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-slate-300 text-sm backdrop-blur-sm">
+                                                    {formatDate(selectedImage.upload_time)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => setSelectedImage(null)}
+                                    className="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-white/20 transition-colors"
+                                >
+                                    <X className="w-6 h-6" />
+                                </button>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );

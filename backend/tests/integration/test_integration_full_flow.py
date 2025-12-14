@@ -77,8 +77,16 @@ def api_env(monkeypatch):
 def test_full_flow(api_env):
     handlers = api_env
     
-    # 1. Generate Upload URL
-    evt_upload = {'body': json.dumps({'filename': 'integration.jpg'})}
+    # 1. Generate Upload URL & Save Metadata (Unified)
+    evt_upload = {
+        'body': json.dumps({
+            'filename': 'integration.jpg',
+            'user_id': 'int_user',
+            'tags': ['integration_test', 'unified'],
+            'tag': 'integration_test',
+            'description': 'Integration Test Upload'
+        })
+    }
     res_upload = handlers.generate_upload_url_handler(evt_upload, None)
     assert res_upload['statusCode'] == 200
     body_upload = json.loads(res_upload['body'])
@@ -102,16 +110,10 @@ def test_full_flow(api_env):
     upload_res = requests.put(upload_url, data='binary content')
     assert upload_res.status_code == 200
     
-    # 3. Save Metadata
-    evt_meta = {
-        'body': json.dumps({
-            'user_id': 'int_user',
-            'image_id': object_name,
-            'tag': 'integration_test'
-        })
-    }
-    res_meta = handlers.save_metadata_handler(evt_meta, None)
-    assert res_meta['statusCode'] == 201
+    assert upload_res.status_code == 200
+    
+    # 3. Save Metadata (Merged into Step 1, so skipping explicit call)
+    # The handler in Step 1 should have saved it.
     
     # 4. List Images
     evt_list = {
@@ -122,10 +124,60 @@ def test_full_flow(api_env):
     assert len(body_list['images']) > 0
     assert body_list['images'][0]['image_id'] == object_name
     
-    # 5. Delete
+    assert body_list['images'][0]['image_id'] == object_name
+
+    # 4b. List Images (Filtered by Tag)
+    evt_list_tag = {
+        'queryStringParameters': {'tag': 'integration_test'}
+    }
+    res_list_tag = handlers.list_images_handler(evt_list_tag, None)
+    body_list_tag = json.loads(res_list_tag['body'])
+    assert len(body_list_tag['images']) > 0
+    assert body_list_tag['images'][0]['tag'] == 'integration_test'
+    
+    # 5. Download URL
+    evt_dl = {
+        'queryStringParameters': {'id': object_name}
+    }
+    res_dl = handlers.generate_download_url_handler(evt_dl, None)
+    assert res_dl['statusCode'] == 200
+    dl_url = json.loads(res_dl['body'])['download_url']
+    
+    # Verify content
+    dl_res = requests.get(dl_url)
+    assert dl_res.status_code == 200
+    assert dl_res.content == b'binary content'
+    
+    # 6. Delete
     evt_del = {
         'queryStringParameters': {'id': object_name, 'user_id': 'int_user'}
     }
     res_del = handlers.delete_image_handler(evt_del, None)
     assert res_del['statusCode'] == 200
+
+def test_edge_cases(api_env):
+    handlers = api_env
+    
+    # 1. Get Download URL for non-existent file
+    # (S3 Presigning usually succeeds regardless, but we verify it handles the request gracefully)
+    evt_dl = {'queryStringParameters': {'id': 'non-existent-file.jpg'}}
+    res_dl = handlers.generate_download_url_handler(evt_dl, None)
+    assert res_dl['statusCode'] == 200
+    
+    # 2. List images for user with no images
+    evt_list = {'queryStringParameters': {'user_id': 'ghost_user'}}
+    res_list = handlers.list_images_handler(evt_list, None)
+    assert res_list['statusCode'] == 200
+    assert len(json.loads(res_list['body'])['images']) == 0
+    
+    # 3. Missing Parameters in Upload
+    evt_bad_upload = {'body': json.dumps({})} # Missing filename
+    res_bad_upload = handlers.generate_upload_url_handler(evt_bad_upload, None)
+    assert res_bad_upload['statusCode'] == 400
+    
+    # 4. Unknown endpoint/method (not really testable via handlers direct call without router)
+    # But we can test missing query params for list
+    evt_bad_list = {'queryStringParameters': {}}
+    res_bad_list = handlers.list_images_handler(evt_bad_list, None)
+    assert res_bad_list['statusCode'] == 400
 
