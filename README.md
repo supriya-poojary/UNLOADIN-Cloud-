@@ -105,16 +105,38 @@ For detailed architecture diagrams, see [docs/architecture.md](docs/architecture
 
 ## 🛠️ Tech Stack
 
-### Backend
-- **Runtime**: Python 3.8+
-- **Cloud**: AWS Lambda, S3, DynamoDB
-- **Local Dev**: LocalStack (AWS emulator)
-- **Testing**: pytest, moto, requests
-- **API Spec**: OpenAPI 3.0
+### 💻 Programming Languages
+- **Frontend**: JavaScript (ES6+)
+- **Backend**: Python (3.8+)
+
+### 🎨 Frontend
+- **Framework**: React 18.3 (Vite)
+- **Styling**: Tailwind CSS
+- **Animations**: Framer Motion
+- **3D Graphics**: React Three Fiber (@react-three/drei)
+- **State Management**: React Hooks (useState, useEffect)
+- **Routing**: React Router v6
+- **HTTP Client**: Axios
+- **Icons**: Lucide React
+- **Notifications**: React Hot Toast
+
+### ⚙️ Backend
+- **Framework**: Flask (Microframework)
+- **Cloud Services**: AWS S3, AWS DynamoDB, AWS Lambda (Serverless capable)
+- **Local Development**: LocalStack (AWS Cloud Emulator)
+- **Testing**: Pytest, Moto (AWS Mocking)
+- **WSGI Server**: Gunicorn (for production)
+- **API Specification**: OpenAPI 3.0
+
+### 🚀 DevOps & Deployment
+- **Frontend Hosting**: Netlify / Vercel
+- **Backend Hosting**: Render / AWS Lambda
+- **Containerization**: Docker, Docker Compose
+- **Infrastructure**: Terraform / CloudFormation ready
 
 ---
 
-## 🔌 API Endpoints
+## � API Endpoints
 The backend provides a RESTful API compliant with the company's specifications:
 
 ### Upload
@@ -147,29 +169,14 @@ Image metadata is stored in DynamoDB with the following structure:
 - **`user_id`**: Owner identifier (Partition Key).
 - **`s3_key`**: Key used in S3 bucket.
 - **`content_type`**: MIME type of the file.
+- **`file_size`**: Size of the file in bytes.
 - **`upload_time`**: ISO 8601 timestamp.
 - **`tags`**: List of strings (e.g., `["vacation", "beach"]`).
 - **`description`**: Optional text description.
 
 ---
 
-### Frontend
-- **Framework**: React 18.3 + Vite
-- **Styling**: Tailwind CSS
-- **Animations**: Framer Motion, React Three Fiber
-- **3D Graphics**: Three.js, @react-three/drei
-- **HTTP Client**: Axios
-- **Routing**: React Router v6
-- **UI Components**: Lucide Icons, React Hot Toast
-
-### DevOps
-- **Containerization**: Docker, Docker Compose
-- **CI/CD Ready**: GitHub Actions compatible
-- **Infrastructure**: Terraform/CloudFormation ready
-
----
-
-## 📁 Project Structure
+## �📁 Project Structure
 
 ```
 UNLOADIN/
@@ -731,7 +738,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📞 Contact 
 
-**Supriya S Pojjary**  
+**Supriya S Poojary**  
 📧 Email: supriyaspoojary26@gmail.com
 
 ---
