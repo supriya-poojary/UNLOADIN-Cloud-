@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Trash2, Share2, Link as LinkIcon, Edit, RotateCcw, Cloud, Check, Filter, X, Search } from 'lucide-react';
+import { Trash2, Upload, Grid as GridIcon, List as ListIcon, Filter, X, Search, Download, Check, RotateCcw, Cloud, Edit, Link as LinkIcon, Share2 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -33,6 +33,8 @@ const formatDate = (isoString) => {
 };
 
 export default function Gallery({ refreshTrigger }) {
+    console.log("Gallery Component Rendering"); // Debug Log
+
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -42,6 +44,7 @@ export default function Gallery({ refreshTrigger }) {
     const [viewMode, setViewMode] = useState('grid'); // 'grid', 'grouped' (tags)
     const [showDuplicates, setShowDuplicates] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedImages, setSelectedImages] = useState(new Set());
 
     const fetchImages = async () => {
         try {
@@ -65,6 +68,47 @@ export default function Gallery({ refreshTrigger }) {
         fetchImages();
     }, [refreshTrigger]);
 
+    const toggleSelection = (id) => {
+        setSelectedImages(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(id)) {
+                newSet.delete(id);
+            } else {
+                newSet.add(id);
+            }
+            return newSet;
+        });
+    };
+
+    const handleBulkDelete = async () => {
+        if (!confirm(`Are you sure you want to delete ${selectedImages.size} images?`)) return;
+
+        const toastId = toast.loading("Deleting selected images...");
+        const ids = Array.from(selectedImages);
+        let successCount = 0;
+
+        // Execute deletions sequentially (simpler for now) or parallel
+        for (const id of ids) {
+            try {
+                await axios.delete(`${API_URL}/images/${id}`, {
+                    params: { user_id: 'user_123' }
+                });
+                successCount++;
+            } catch (err) {
+                console.error(`Failed to delete ${id}`, err);
+            }
+        }
+
+        toast.dismiss(toastId);
+        if (successCount > 0) {
+            toast.success(`Deleted ${successCount} images`);
+            setImages(prev => prev.filter(img => !selectedImages.has(img.image_id)));
+            setSelectedImages(new Set()); // Clear selection
+        } else {
+            toast.error("Failed to delete images");
+        }
+    };
+
     const handleDelete = async (e, imageId) => {
         e.stopPropagation();
         if (!confirm("Are you sure you want to delete this image?")) return;
@@ -77,6 +121,11 @@ export default function Gallery({ refreshTrigger }) {
             toast.dismiss();
             toast.success("Image deleted");
             setImages(prev => prev.filter(img => img.image_id !== imageId));
+            setSelectedImages(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(imageId);
+                return newSet;
+            });
         } catch (err) {
             toast.dismiss();
             toast.error("Failed to delete");
@@ -197,7 +246,7 @@ export default function Gallery({ refreshTrigger }) {
         }
     };
 
-    const GalleryImageCard = ({ item }) => {
+    const GalleryImageCard = ({ item, onDelete, onDownload, onSelect, isSelected }) => {
         const [src, setSrc] = useState(null);
         const [showActions, setShowActions] = useState(false);
         const [activeFilter, setActiveFilter] = useState('');
@@ -214,6 +263,16 @@ export default function Gallery({ refreshTrigger }) {
             };
             getUrl();
         }, [item]);
+
+        const handleCardClick = (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                e.stopPropagation();
+                e.preventDefault();
+                onSelect(item.image_id);
+            } else {
+                setSelectedImage({ src, ...item });
+            }
+        };
 
         if (!src) return <div className="w-full h-72 bg-slate-800/50 animate-pulse rounded-xl" />;
 
@@ -237,26 +296,43 @@ export default function Gallery({ refreshTrigger }) {
                     </div>
 
                     {/* Image Area */}
-                    <div className="relative h-[calc(100%-2rem)] p-2">
+                    <div className={`relative h-[calc(100%-2rem)] p-2 ${selectedImages.has(item.image_id) ? 'bg-blue-500/20' : ''}`}>
                         <img
-                            onClick={() => setSelectedImage({ src, ...item })}
+                            onClick={handleCardClick}
                             src={src}
-                            className={`w-full h-full object-cover rounded-lg transition-all duration-300 cursor-pointer ${activeFilter}`}
+                            className={`w-full h-full object-cover rounded-lg transition-all duration-300 cursor-pointer ${activeFilter} ${selectedImages.has(item.image_id) ? 'ring-4 ring-blue-500 scale-95' : ''}`}
                             alt=""
                         />
 
+                        {/* Selection Indicator */}
+                        {selectedImages.has(item.image_id) && (
+                            <div className="absolute top-4 right-4 bg-blue-500 text-white rounded-full p-1 shadow-lg z-20 pointer-events-none">
+                                <Check className="w-4 h-4" />
+                            </div>
+                        )}
+
                         {/* Hover Overlay Actions */}
                         <div
-                            onClick={() => setSelectedImage({ src, ...item })}
+                            onClick={handleCardClick}
                             className={`absolute inset-0 bg-black/70 backdrop-blur-[2px] flex flex-col items-center justify-center gap-4 transition-opacity duration-200 cursor-pointer ${showActions ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
                         >
 
                             {/* Primary Actions Row */}
                             <div className="flex gap-3">
+                                {selectedImages.size > 0 && (
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); handleBulkDelete(); }}
+                                        className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors font-bold shadow-lg"
+                                    >
+                                        <Trash2 size={18} />
+                                        Delete ({selectedImages.size})
+                                    </button>
+                                )}
                                 <button
                                     onClick={(e) => {
                                         const activePreset = FILTER_PRESETS.find(p => p.class === activeFilter);
-                                        handleForceDownload(e, src, item.original_filename, activePreset?.css);
+                                        // Ensure onDownload is defined before calling
+                                        if (onDownload) onDownload(e, src, item.original_filename, activePreset?.css);
                                     }}
                                     className="p-2.5 rounded-full bg-white/10 hover:bg-blue-500/20 text-white hover:text-blue-400 border border-white/10 transition-all transform hover:scale-110"
                                     title="Download (JPG/PNG)"
@@ -294,7 +370,7 @@ export default function Gallery({ refreshTrigger }) {
                                     <Cloud className="w-3 h-3" /> Backup
                                 </button>
                                 <button
-                                    onClick={(e) => handleDelete(e, item.image_id)}
+                                    onClick={(e) => onDelete(e, item.image_id)}
                                     className="px-3 py-1.5 rounded-md bg-white/5 hover:bg-red-900/30 text-xs text-red-400 border border-white/10 flex items-center gap-1 transition-colors"
                                 >
                                     <Trash2 className="w-3 h-3" /> Delete
@@ -405,6 +481,16 @@ export default function Gallery({ refreshTrigger }) {
                             <Download className="w-3 h-3 rotate-45" />
                             {showDuplicates ? 'Duplicates' : 'Find Dups'}
                         </button>
+
+                        {selectedImages.size > 0 && (
+                            <button
+                                onClick={handleBulkDelete}
+                                className="flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-md bg-red-500 hover:bg-red-600 text-white transition-colors whitespace-nowrap shadow-lg shadow-red-500/20 animate-in fade-in slide-in-from-bottom-2"
+                            >
+                                <Trash2 className="w-3 h-3" />
+                                Delete ({selectedImages.size})
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -495,7 +581,16 @@ export default function Gallery({ refreshTrigger }) {
                                                 </h3>
                                                 <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                                     <AnimatePresence>
-                                                        {groupImages.map(img => <GalleryImageCard key={img.image_id} item={img} />)}
+                                                        {groupImages.map(img => (
+                                                            <GalleryImageCard
+                                                                key={img.image_id}
+                                                                item={img}
+                                                                onDelete={handleDelete}
+                                                                onDownload={handleForceDownload}
+                                                                onSelect={toggleSelection}
+                                                                isSelected={selectedImages.has(img.image_id)}
+                                                            />
+                                                        ))}
                                                     </AnimatePresence>
                                                 </motion.div>
                                             </div>
@@ -507,7 +602,16 @@ export default function Gallery({ refreshTrigger }) {
                                 return (
                                     <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                         <AnimatePresence>
-                                            {processed.map(img => <GalleryImageCard key={img.image_id} item={img} />)}
+                                            {processed.map(img => (
+                                                <GalleryImageCard
+                                                    key={img.image_id}
+                                                    item={img}
+                                                    onDelete={handleDelete}
+                                                    onDownload={handleForceDownload}
+                                                    onSelect={toggleSelection}
+                                                    isSelected={selectedImages.has(img.image_id)}
+                                                />
+                                            ))}
                                         </AnimatePresence>
                                     </motion.div>
                                 );

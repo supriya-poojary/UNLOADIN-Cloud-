@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { User, Lock, Mail, ArrowRight, Eye, EyeOff } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { User, Lock, Mail, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-export default function Auth({ onLogin }) {
+export default function Auth() {
     const [isRegister, setIsRegister] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
+    const Navigate = useNavigate();
     const [isForgotPassword, setIsForgotPassword] = useState(false);
-    const [form, setForm] = useState({ username: '', password: '', name: '' });
+    const [form, setForm] = useState({ username: '', password: '' });
     const [resetForm, setResetForm] = useState({ username: '', newPassword: '' });
     const [googleEmail, setGoogleEmail] = useState('');
     const [error, setError] = useState('');
@@ -25,50 +25,61 @@ export default function Auth({ onLogin }) {
         e.preventDefault();
         setError('');
 
-        // Requirement: Valid Google Account format
-        if (!form.username.trim().endsWith('@gmail.com')) {
-            setError('Enter correct username format');
+        if (!form.username || !form.password) {
+            setError('Please enter username and password');
             return;
         }
 
-        const storedPassword = localStorage.getItem('demo_password');
+        // Retrieve users from local storage
+        const storedUsers = JSON.parse(localStorage.getItem('cloudbox_users') || '{}');
+        const storedPassword = storedUsers[form.username];
 
-        // If a password has been set via "Forgot Password", validate against it
-        if (storedPassword && form.password !== storedPassword) {
-            setError('Wrong Password');
-            return;
+        if (storedPassword) {
+            // User exists, check password
+            if (form.password === storedPassword) {
+                toast.success("Welcome back!");
+                navigate('/dashboard');
+            } else {
+                setError('Incorrect password');
+            }
+        } else {
+            // User does not exist
+            setError('User not found. Please Sign Up first.');
         }
-
-        // If no password set (initial state), we allow ANY password to simulate 
-        // "logging in with their own Google account password"
-        if (!storedPassword && !form.password) {
-            setError('Please enter your password');
-            return;
-        }
-
-        navigate('/dashboard');
     };
 
-    const handleGoogleLogin = async (e) => {
+    const handleRegister = (e) => {
         e.preventDefault();
+        setError('');
 
-        if (!googleEmail) {
-            alert("Please enter your email address.");
+        if (!form.username || !form.password) {
+            toast.error("Please fill in all fields");
             return;
         }
 
-        // Simulate verification process
-        const loadingToast = toast.loading("Sending verification email...");
+        // Basic email validation
+        if (!form.username.includes('@') || !form.username.includes('.')) {
+            toast.error("Please enter a valid email address");
+            return;
+        }
 
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        const storedUsers = JSON.parse(localStorage.getItem('cloudbox_users') || '{}');
 
-        toast.dismiss(loadingToast);
-        toast.success(`Welcome to CloudBox! Verification sent to ${googleEmail}. Please check your mail.`);
+        if (storedUsers[form.username]) {
+            toast.error("User already exists. Please Login.");
+            return;
+        }
 
-        // Brief delay to read the toast then "verify" and login
+        // Save new user
+        storedUsers[form.username] = form.password;
+        localStorage.setItem('cloudbox_users', JSON.stringify(storedUsers));
+
+        toast.success("Account created successfully! Logging in...");
+
+        // Auto-login after signup
         setTimeout(() => {
             navigate('/dashboard');
-        }, 2500);
+        }, 1000);
     };
 
     const handleResetPassword = (e) => {
@@ -123,7 +134,7 @@ export default function Auth({ onLogin }) {
             opacity: 1;
             z-index: 10;
             pointer-events: auto;
-            transform: translateX(0%);
+            transform: translateX(100%);
         }
 
         .form-box.Login {
@@ -258,20 +269,15 @@ export default function Auth({ onLogin }) {
                                         type="text"
                                         required
                                         aria-label="Username"
-                                        value={form.username}
-                                        onChange={(e) => {
-                                            setForm({ ...form, username: e.target.value });
-                                            if (error) setError('');
-                                        }}
                                         className="w-full bg-[#0f172a] border border-white/10 rounded-xl py-3 pl-10 pr-4 focus:ring-2 focus:ring-[#ff7a57] focus:border-transparent outline-none transition-all"
                                         placeholder="Username"
                                     />
                                 </div>
 
-                                <div className="relative group animation" style={{ '--i': 2 }}>
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#ff7a57] transition-colors" />
+                                <div className="relative animation" style={{ '--i': 2 }}>
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                                     <input
-                                        type={showPassword ? "text" : "password"}
+                                        type="password"
                                         required
                                         aria-label="Password"
                                         value={form.password}
@@ -279,17 +285,10 @@ export default function Auth({ onLogin }) {
                                             setForm({ ...form, password: e.target.value });
                                             if (error) setError('');
                                         }}
-                                        className={`w-full bg-[#0f172a] border rounded-xl py-3 pl-10 pr-12 focus:ring-2 focus:ring-[#ff7a57] focus:border-transparent outline-none transition-all ${error ? 'border-red-500' : 'border-white/10'
+                                        className={`w-full bg-[#0f172a] border rounded-xl py-3 pl-10 pr-4 focus:ring-2 focus:ring-[#ff7a57] focus:border-transparent outline-none transition-all ${error ? 'border-red-500' : 'border-white/10'
                                             }`}
                                         placeholder="Password"
                                     />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors z-20 cursor-pointer p-1"
-                                    >
-                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                                    </button>
                                 </div>
 
                                 {error && (
@@ -373,38 +372,40 @@ export default function Auth({ onLogin }) {
 
                 {/* Register/Google Form */}
                 <div className="form-box Register text-white">
-                    <form onSubmit={handleGoogleLogin} className="w-full flex flex-col gap-6 items-center justify-center h-full">
-                        <h2 className="text-4xl font-bold mb-4 animation" style={{ '--i': 0 }}>Get Started</h2>
+                    <form onSubmit={handleRegister} className="w-full flex flex-col gap-6 items-center justify-center h-full">
+                        <h2 className="text-4xl font-bold mb-4 animation" style={{ '--i': 0 }}>Sign Up</h2>
 
-                        <p className="text-slate-300 text-center mb-6 animation" style={{ '--i': 1 }}>
-                            Join CloudBox instantly. Enter your Google email to verify.
-                        </p>
-
-                        <div className="w-full relative animation" style={{ '--i': 2 }}>
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                        <div className="w-full relative animation" style={{ '--i': 1 }}>
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                             <input
                                 type="email"
                                 required
-                                aria-label="Google Email"
-                                value={googleEmail}
-                                onChange={(e) => setGoogleEmail(e.target.value)}
+                                aria-label="Username"
+                                value={form.username}
+                                onChange={(e) => setForm({ ...form, username: e.target.value })}
                                 className="w-full bg-[#0f172a] border border-white/10 rounded-xl py-3 pl-10 pr-4 focus:ring-2 focus:ring-[#ff7a57] focus:border-transparent outline-none transition-all"
-                                placeholder="Enter your Google Mail"
+                                placeholder="Enter New Email"
+                            />
+                        </div>
+
+                        <div className="w-full relative animation" style={{ '--i': 2 }}>
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                            <input
+                                type="password"
+                                required
+                                aria-label="Password"
+                                value={form.password}
+                                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                                className="w-full bg-[#0f172a] border border-white/10 rounded-xl py-3 pl-10 pr-4 focus:ring-2 focus:ring-[#ff7a57] focus:border-transparent outline-none transition-all"
+                                placeholder="Enter New Password"
                             />
                         </div>
 
                         <button
-                            onClick={handleGoogleLogin}
-                            className="w-full py-4 px-6 rounded-xl bg-white text-slate-900 font-bold flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all animation"
+                            className="w-full py-3 rounded-xl bg-white text-slate-900 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all animation"
                             style={{ '--i': 3 }}
                         >
-                            <svg className="w-6 h-6" viewBox="0 0 24 24">
-                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                            </svg>
-                            Verify & Sign In
+                            Sign Up
                         </button>
                     </form>
                 </div>
@@ -423,10 +424,7 @@ export default function Auth({ onLogin }) {
                         <h1 className="text-3xl font-bold mb-4">Welcome!</h1>
                         <p className="mb-8 text-center px-8">Join us and experience infinite possibilities.</p>
                         <button onClick={toggleAuth} className="border-2 border-white px-8 py-2 rounded-xl font-bold hover:bg-white hover:text-[#d8482d] transition-colors flex items-center gap-2">
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-                            </svg>
-                            Google Sign In
+                            Sign Up
                         </button>
                     </div>
                 </div>
