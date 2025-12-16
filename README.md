@@ -15,6 +15,15 @@
 
 > **Note**: The backend on Render builds may take ~50 seconds to spin up from sleep.
 
+## 🎥 Demo Video
+
+[▶️ **Watch Project Demo (Google Drive)**](INSERT_YOUR_DRIVE_LINK_HERE)
+
+> **Instructions**:
+> 1. Upload your screen recording to Google Drive.
+> 2. Right-click the video > Share > Change to "**Anyone with the link**".
+> 3. Copy the link and replace `INSERT_YOUR_DRIVE_LINK_HERE` above.
+
 ## 📋 Table of Contents
 
 - [Overview](#overview)
