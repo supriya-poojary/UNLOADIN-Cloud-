@@ -4,6 +4,7 @@ import { Trash2, Upload, Grid as GridIcon, List as ListIcon, Filter, X, Search, 
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
+import { useAuth } from '@/context/AuthContext';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const FILTER_PRESETS = [
@@ -35,6 +36,7 @@ const formatDate = (isoString) => {
 export default function Gallery({ refreshTrigger }) {
     console.log("Gallery Component Rendering"); // Debug Log
 
+    const { currentUser } = useAuth();
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -47,9 +49,10 @@ export default function Gallery({ refreshTrigger }) {
     const [selectedImages, setSelectedImages] = useState(new Set());
 
     const fetchImages = async () => {
+        if (!currentUser) return;
         try {
             setLoading(true);
-            const res = await axios.get(`${API_URL}/images`, { params: { user_id: 'user_123' } });
+            const res = await axios.get(`${API_URL}/images`, { params: { user_id: currentUser } });
 
             const mapped = (res.data.images || []).map(item => ({
                 id: item.image_id,
@@ -66,7 +69,7 @@ export default function Gallery({ refreshTrigger }) {
 
     useEffect(() => {
         fetchImages();
-    }, [refreshTrigger]);
+    }, [refreshTrigger, currentUser]);
 
     const toggleSelection = (id) => {
         setSelectedImages(prev => {
@@ -91,7 +94,7 @@ export default function Gallery({ refreshTrigger }) {
         for (const id of ids) {
             try {
                 await axios.delete(`${API_URL}/images/${id}`, {
-                    params: { user_id: 'user_123' }
+                    params: { user_id: currentUser }
                 });
                 successCount++;
             } catch (err) {
@@ -116,7 +119,7 @@ export default function Gallery({ refreshTrigger }) {
         try {
             toast.loading("Deleting...");
             await axios.delete(`${API_URL}/images/${imageId}`, {
-                params: { user_id: 'user_123' }
+                params: { user_id: currentUser }
             });
             toast.dismiss();
             toast.success("Image deleted");

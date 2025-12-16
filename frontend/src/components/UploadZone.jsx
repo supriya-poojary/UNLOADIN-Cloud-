@@ -5,10 +5,12 @@ import { UploadCloud, X, File, CheckCircle } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export default function UploadZone({ onUploadComplete }) {
+    const { currentUser } = useAuth();
     const [files, setFiles] = useState([]);
     const [tags, setTags] = useState([]);
     const [tagInput, setTagInput] = useState('');
@@ -75,7 +77,7 @@ export default function UploadZone({ onUploadComplete }) {
                         filename: file.name,
                         content_type: file.type,
                         file_size: file.size,
-                        user_id: 'user_123',
+                        user_id: currentUser,
                         tags: finalTags,
                         tag: finalTags[0] || 'uncategorized',
                         description: `Batch upload on ${new Date().toLocaleDateString()}`

@@ -212,5 +212,173 @@
     "s3_key": "2025-12-16T11-00-23.770875_6d97c319-80d9-4d13-b9f8-64489cb58431-pexels-archbob-63330.jpg",
     "upload_time": "2025-12-16T11:00:23.770875",
     "original_filename": "pexels-archbob-63330.jpg"
+  },
+  {
+    "user_id": "user_A_auth_id",
+    "image_id": "2025-12-16T14-23-03.708624_b47a977e-124d-431f-974f-4df1230f2cfb-image_A.txt",
+    "tag": "test",
+    "tags": [
+      "test"
+    ],
+    "description": "",
+    "content_type": "text/plain",
+    "file_size": 123,
+    "s3_key": "2025-12-16T14-23-03.708624_b47a977e-124d-431f-974f-4df1230f2cfb-image_A.txt",
+    "upload_time": "2025-12-16T14:23:03.708624",
+    "original_filename": "image_A.txt"
+  },
+  {
+    "user_id": "user_B_auth_id",
+    "image_id": "2025-12-16T14-23-07.795230_24e7eb54-81bf-480b-b801-2303f3329cf4-image_B.txt",
+    "tag": "test",
+    "tags": [
+      "test"
+    ],
+    "description": "",
+    "content_type": "text/plain",
+    "file_size": 123,
+    "s3_key": "2025-12-16T14-23-07.795230_24e7eb54-81bf-480b-b801-2303f3329cf4-image_B.txt",
+    "upload_time": "2025-12-16T14:23:07.795230",
+    "original_filename": "image_B.txt"
+  },
+  {
+    "user_id": "user_A_auth_id",
+    "image_id": "2025-12-16T14-25-43.207954_1297d6f4-af4b-4520-b01e-3aa1d352305f-image_A.txt",
+    "tag": "test",
+    "tags": [
+      "test"
+    ],
+    "description": "",
+    "content_type": "text/plain",
+    "file_size": 123,
+    "s3_key": "2025-12-16T14-25-43.207954_1297d6f4-af4b-4520-b01e-3aa1d352305f-image_A.txt",
+    "upload_time": "2025-12-16T14:25:43.207954",
+    "original_filename": "image_A.txt"
+  },
+  {
+    "user_id": "user_B_auth_id",
+    "image_id": "2025-12-16T14-25-47.269554_6f49b2d2-6876-4723-a49e-1c453b05e325-image_B.txt",
+    "tag": "test",
+    "tags": [
+      "test"
+    ],
+    "description": "",
+    "content_type": "text/plain",
+    "file_size": 123,
+    "s3_key": "2025-12-16T14-25-47.269554_6f49b2d2-6876-4723-a49e-1c453b05e325-image_B.txt",
+    "upload_time": "2025-12-16T14:25:47.269554",
+    "original_filename": "image_B.txt"
+  },
+  {
+    "user_id": "user_A_auth_id",
+    "image_id": "2025-12-16T14-26-55.555273_e5a3edcc-4dff-460b-b407-f4447044777b-image_A.txt",
+    "tag": "test",
+    "tags": [
+      "test"
+    ],
+    "description": "",
+    "content_type": "text/plain",
+    "file_size": 123,
+    "s3_key": "2025-12-16T14-26-55.555273_e5a3edcc-4dff-460b-b407-f4447044777b-image_A.txt",
+    "upload_time": "2025-12-16T14:26:55.555273",
+    "original_filename": "image_A.txt"
+  },
+  {
+    "user_id": "user_B_auth_id",
+    "image_id": "2025-12-16T14-26-59.614691_00965c88-9a86-4b71-bc6a-db60e32e3b10-image_B.txt",
+    "tag": "test",
+    "tags": [
+      "test"
+    ],
+    "description": "",
+    "content_type": "text/plain",
+    "file_size": 123,
+    "s3_key": "2025-12-16T14-26-59.614691_00965c88-9a86-4b71-bc6a-db60e32e3b10-image_B.txt",
+    "upload_time": "2025-12-16T14:26:59.614691",
+    "original_filename": "image_B.txt"
+  },
+  {
+    "user_id": "user_A_auth_id",
+    "image_id": "2025-12-16T14-30-30.082237_535d6812-5f6f-423b-86e2-89c409ae3403-image_A.txt",
+    "tag": "test",
+    "tags": [
+      "test"
+    ],
+    "description": "",
+    "content_type": "text/plain",
+    "file_size": 123,
+    "s3_key": "2025-12-16T14-30-30.082237_535d6812-5f6f-423b-86e2-89c409ae3403-image_A.txt",
+    "upload_time": "2025-12-16T14:30:30.082237",
+    "original_filename": "image_A.txt"
+  },
+  {
+    "user_id": "user_B_auth_id",
+    "image_id": "2025-12-16T14-30-34.166167_216293ee-d0e5-4fde-94e7-750249c19e0e-image_B.txt",
+    "tag": "test",
+    "tags": [
+      "test"
+    ],
+    "description": "",
+    "content_type": "text/plain",
+    "file_size": 123,
+    "s3_key": "2025-12-16T14-30-34.166167_216293ee-d0e5-4fde-94e7-750249c19e0e-image_B.txt",
+    "upload_time": "2025-12-16T14:30:34.166167",
+    "original_filename": "image_B.txt"
+  },
+  {
+    "user_id": "user_A_auth_id",
+    "image_id": "2025-12-16T14-34-18.135437_2518a1aa-2515-4a5e-90b7-48ddade7e2b8-image_A.txt",
+    "tag": "test",
+    "tags": [
+      "test"
+    ],
+    "description": "",
+    "content_type": "text/plain",
+    "file_size": 123,
+    "s3_key": "2025-12-16T14-34-18.135437_2518a1aa-2515-4a5e-90b7-48ddade7e2b8-image_A.txt",
+    "upload_time": "2025-12-16T14:34:18.135437",
+    "original_filename": "image_A.txt"
+  },
+  {
+    "user_id": "user_B_auth_id",
+    "image_id": "2025-12-16T14-34-22.243785_f3cb3c5d-acd1-4653-93a9-11e1dac79069-image_B.txt",
+    "tag": "test",
+    "tags": [
+      "test"
+    ],
+    "description": "",
+    "content_type": "text/plain",
+    "file_size": 123,
+    "s3_key": "2025-12-16T14-34-22.243785_f3cb3c5d-acd1-4653-93a9-11e1dac79069-image_B.txt",
+    "upload_time": "2025-12-16T14:34:22.243785",
+    "original_filename": "image_B.txt"
+  },
+  {
+    "user_id": "suppi123@example.com",
+    "image_id": "2025-12-16T15-15-14.452170_0272281d-4568-4d7c-b76f-7aa14fd97bf0-istockphoto-1796374503-612x612.jpg",
+    "tag": "liom",
+    "tags": [
+      "liom"
+    ],
+    "description": "Batch upload on 12/16/2025",
+    "content_type": "image/jpeg",
+    "file_size": 35976,
+    "s3_key": "2025-12-16T15-15-14.452170_0272281d-4568-4d7c-b76f-7aa14fd97bf0-istockphoto-1796374503-612x612.jpg",
+    "upload_time": "2025-12-16T15:15:14.452170",
+    "original_filename": "istockphoto-1796374503-612x612.jpg"
+  },
+  {
+    "user_id": "suppi123@example.com",
+    "image_id": "2025-12-16T15-15-30.961228_a0b230e7-cc3d-4e84-bd12-ec4feb974761-3001767.jpg",
+    "tag": "E waste",
+    "tags": [
+      "E waste"
+    ],
+    "description": "Batch upload on 12/16/2025",
+    "content_type": "image/jpeg",
+    "file_size": 211954,
+    "s3_key": "2025-12-16T15-15-30.961228_a0b230e7-cc3d-4e84-bd12-ec4feb974761-3001767.jpg",
+    "upload_time": "2025-12-16T15:15:30.961228",
+    "original_filename": "3001767.jpg"
   }
 ]

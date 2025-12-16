@@ -69,6 +69,8 @@ def save_metadata(item):
 def query_images(user_id=None, tag=None):
     data = _load_db()
     results = data
+    if not user_id:
+        return []
     if user_id:
         results = [i for i in results if i.get('user_id') == user_id]
     if tag:

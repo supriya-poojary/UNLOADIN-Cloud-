@@ -61,24 +61,28 @@ class ErrorBoundary extends React.Component {
     }
 }
 
+import { AuthProvider } from '@/context/AuthContext';
+
 function App() {
     return (
-        <Router>
-            <ErrorBoundary>
-                <HealthCheck />
-                <AnimatedRoutes />
-                <Toaster
-                    position="bottom-right"
-                    toastOptions={{
-                        style: {
-                            background: '#1e293b',
-                            color: '#fff',
-                            border: '1px solid rgba(255,255,255,0.1)'
-                        }
-                    }}
-                />
-            </ErrorBoundary>
-        </Router>
+        <AuthProvider>
+            <Router>
+                <ErrorBoundary>
+                    <HealthCheck />
+                    <AnimatedRoutes />
+                    <Toaster
+                        position="bottom-right"
+                        toastOptions={{
+                            style: {
+                                background: '#1e293b',
+                                color: '#fff',
+                                border: '1px solid rgba(255,255,255,0.1)'
+                            }
+                        }}
+                    />
+                </ErrorBoundary>
+            </Router>
+        </AuthProvider>
     )
 }
 

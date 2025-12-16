@@ -3,10 +3,12 @@ import { User, Lock, Mail, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Auth() {
     const [isRegister, setIsRegister] = useState(false);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const Navigate = useNavigate();
     const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -37,6 +39,7 @@ export default function Auth() {
         if (storedPassword) {
             // User exists, check password
             if (form.password === storedPassword) {
+                login(form.username);
                 toast.success("Welcome back!");
                 navigate('/dashboard');
             } else {
@@ -74,6 +77,7 @@ export default function Auth() {
         storedUsers[form.username] = form.password;
         localStorage.setItem('cloudbox_users', JSON.stringify(storedUsers));
 
+        login(form.username);
         toast.success("Account created successfully! Logging in...");
 
         // Auto-login after signup
