@@ -141,16 +141,6 @@
   },
   {
     "user_id": "user_123",
-    "image_id": "f3ed1457-767d-4db6-ae9b-d357ec16c277-pexels-pixabay-162203.jpg",
-    "tag": "uncategorized",
-    "description": "Batch upload on 12/14/2025",
-    "content_type": "image/jpeg",
-    "s3_key": "f3ed1457-767d-4db6-ae9b-d357ec16c277-pexels-pixabay-162203.jpg",
-    "upload_time": "2025-12-14T08:49:29.404196",
-    "created_at": "2025-12-14T08:49:29.404196"
-  },
-  {
-    "user_id": "user_123",
     "image_id": "c822e3f4-0fc1-4c07-9fca-cf5cfbc7e39a-pexels-archbob-63330.jpg",
     "tag": "uncategorized",
     "description": "Batch upload on 12/14/2025",
@@ -185,20 +175,6 @@
   },
   {
     "user_id": "user_123",
-    "image_id": "2025-12-16T07-16-26.689284_2d1ba68d-f737-488a-bdce-ca3509978e91-pexels-pixabay-162203.jpg",
-    "tag": "tiger",
-    "tags": [
-      "tiger"
-    ],
-    "description": "Batch upload on 12/16/2025",
-    "content_type": "image/jpeg",
-    "file_size": 1593264,
-    "s3_key": "2025-12-16T07-16-26.689284_2d1ba68d-f737-488a-bdce-ca3509978e91-pexels-pixabay-162203.jpg",
-    "upload_time": "2025-12-16T07:16:26.689284",
-    "original_filename": "pexels-pixabay-162203.jpg"
-  },
-  {
-    "user_id": "user_123",
     "image_id": "2025-12-16T07-29-28.521223_7a9c974d-aa93-4a7b-b270-94f404513825-pexels-pixabay-416179.jpg",
     "tag": "bird",
     "tags": [
@@ -210,5 +186,33 @@
     "s3_key": "2025-12-16T07-29-28.521223_7a9c974d-aa93-4a7b-b270-94f404513825-pexels-pixabay-416179.jpg",
     "upload_time": "2025-12-16T07:29:28.521223",
     "original_filename": "pexels-pixabay-416179.jpg"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "2025-12-16T07-55-54.640633_9e5b9053-e5fd-43f1-845d-3488344518f7-pexels-pixabay-162203.jpg",
+    "tag": "tiger",
+    "tags": [
+      "tiger"
+    ],
+    "description": "Batch upload on 12/16/2025",
+    "content_type": "image/jpeg",
+    "file_size": 1593264,
+    "s3_key": "2025-12-16T07-55-54.640633_9e5b9053-e5fd-43f1-845d-3488344518f7-pexels-pixabay-162203.jpg",
+    "upload_time": "2025-12-16T07:55:54.640633",
+    "original_filename": "pexels-pixabay-162203.jpg"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "2025-12-16T08-19-59.151927_00bb768d-2856-4ef0-9698-e96db5883cf9-download.jpeg",
+    "tag": "Dog",
+    "tags": [
+      "Dog"
+    ],
+    "description": "Batch upload on 12/16/2025",
+    "content_type": "image/jpeg",
+    "file_size": 8630,
+    "s3_key": "2025-12-16T08-19-59.151927_00bb768d-2856-4ef0-9698-e96db5883cf9-download.jpeg",
+    "upload_time": "2025-12-16T08:19:59.151927",
+    "original_filename": "download.jpeg"
   }
 ]

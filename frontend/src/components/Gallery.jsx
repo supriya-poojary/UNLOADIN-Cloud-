@@ -343,6 +343,11 @@ export default function Gallery({ refreshTrigger }) {
                                         {formatBytes(item.file_size)}
                                     </span>
                                 )}
+                                {item.duplicateCount > 1 && (
+                                    <span className="text-[9px] text-red-200 bg-red-500/40 px-1.5 py-0.5 rounded-sm backdrop-blur-sm border border-red-500/30">
+                                        {item.duplicateCount} Copies
+                                    </span>
+                                )}
                             </div>
                         </span>
                     </div>
@@ -456,6 +461,14 @@ export default function Gallery({ refreshTrigger }) {
                                         : `name_${img.original_filename}`;
 
                                     return counts[key] > 1;
+                                }).map(img => {
+                                    // Inject count for display
+                                    const size = (img.file_size && img.file_size > 0) ? img.file_size : 0;
+                                    const type = img.content_type || 'unknown';
+                                    const key = (size > 0)
+                                        ? `size_${size}_type_${type}`
+                                        : `name_${img.original_filename}`;
+                                    return { ...img, duplicateCount: counts[key] };
                                 });
 
                                 if (processed.length === 0) {

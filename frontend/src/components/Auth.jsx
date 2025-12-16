@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { User, Lock, Mail, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { User, Lock, Mail, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-export default function Auth() {
+export default function Auth({ onLogin }) {
     const [isRegister, setIsRegister] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
-    const Navigate = useNavigate();
     const [isForgotPassword, setIsForgotPassword] = useState(false);
-    const [form, setForm] = useState({ username: '', password: '' });
+    const [form, setForm] = useState({ username: '', password: '', name: '' });
     const [resetForm, setResetForm] = useState({ username: '', newPassword: '' });
     const [googleEmail, setGoogleEmail] = useState('');
     const [error, setError] = useState('');
@@ -268,10 +268,10 @@ export default function Auth() {
                                     />
                                 </div>
 
-                                <div className="relative animation" style={{ '--i': 2 }}>
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                                <div className="relative group animation" style={{ '--i': 2 }}>
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#ff7a57] transition-colors" />
                                     <input
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         required
                                         aria-label="Password"
                                         value={form.password}
@@ -279,10 +279,17 @@ export default function Auth() {
                                             setForm({ ...form, password: e.target.value });
                                             if (error) setError('');
                                         }}
-                                        className={`w-full bg-[#0f172a] border rounded-xl py-3 pl-10 pr-4 focus:ring-2 focus:ring-[#ff7a57] focus:border-transparent outline-none transition-all ${error ? 'border-red-500' : 'border-white/10'
+                                        className={`w-full bg-[#0f172a] border rounded-xl py-3 pl-10 pr-12 focus:ring-2 focus:ring-[#ff7a57] focus:border-transparent outline-none transition-all ${error ? 'border-red-500' : 'border-white/10'
                                             }`}
                                         placeholder="Password"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors z-20 cursor-pointer p-1"
+                                    >
+                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
                                 </div>
 
                                 {error && (
