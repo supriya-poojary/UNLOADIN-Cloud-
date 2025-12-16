@@ -431,15 +431,30 @@ export default function Gallery({ refreshTrigger }) {
 
                             // 2. Filter Duplicates
                             if (showDuplicates) {
-                                // Find items that appear > 1 time based on Filename + Size
+                                // Find items that appear > 1 time based on Size + ContentType (Strict Content Match)
+                                // We ignore filename to allow renamed duplicates to be found.
                                 const counts = {};
                                 processed.forEach(img => {
-                                    // Use size if available, otherwise fallback to just name (backward compat)
-                                    const key = img.file_size ? `${img.original_filename}_${img.file_size}` : img.original_filename;
+                                    const size = (img.file_size && img.file_size > 0) ? img.file_size : 0;
+                                    const type = img.content_type || 'unknown';
+
+                                    // Key logic: 
+                                    // If size is present, rely on Size + Type (Visual content proxy)
+                                    // If size is missing (old data), fall back to Filename (Best effort)
+                                    const key = (size > 0)
+                                        ? `size_${size}_type_${type}`
+                                        : `name_${img.original_filename}`;
+
                                     counts[key] = (counts[key] || 0) + 1;
                                 });
+
                                 processed = processed.filter(img => {
-                                    const key = img.file_size ? `${img.original_filename}_${img.file_size}` : img.original_filename;
+                                    const size = (img.file_size && img.file_size > 0) ? img.file_size : 0;
+                                    const type = img.content_type || 'unknown';
+                                    const key = (size > 0)
+                                        ? `size_${size}_type_${type}`
+                                        : `name_${img.original_filename}`;
+
                                     return counts[key] > 1;
                                 });
 
