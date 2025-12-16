@@ -419,11 +419,12 @@ export default function Gallery({ refreshTrigger }) {
                                         {formatBytes(item.file_size)}
                                     </span>
                                 )}
-                                {item.duplicateCount > 1 && (
+                                {showDuplicates && item.duplicateCount > 1 && (
                                     <span className="text-[9px] text-red-200 bg-red-500/40 px-1.5 py-0.5 rounded-sm backdrop-blur-sm border border-red-500/30">
                                         {item.duplicateCount} Copies
                                     </span>
                                 )}
+
                             </div>
                         </span>
                     </div>
@@ -520,47 +521,36 @@ export default function Gallery({ refreshTrigger }) {
                                 );
                             }
 
-                            // 2. Filter Duplicates
+
+                            // 2. Filter for "Show Duplicates" Mode (by tag name)
                             if (showDuplicates) {
-                                // Find items that appear > 1 time based on Size + ContentType (Strict Content Match)
-                                // We ignore filename to allow renamed duplicates to be found.
-                                const counts = {};
+                                const tagCounts = {};
                                 processed.forEach(img => {
-                                    const size = (img.file_size && img.file_size > 0) ? img.file_size : 0;
-                                    const type = img.content_type || 'unknown';
-
-                                    // Key logic: 
-                                    // If size is present, rely on Size + Type (Visual content proxy)
-                                    // If size is missing (old data), fall back to Filename (Best effort)
-                                    const key = (size > 0)
-                                        ? `size_${size}_type_${type}`
-                                        : `name_${img.original_filename}`;
-
-                                    counts[key] = (counts[key] || 0) + 1;
+                                    const tag = img.tag || 'untagged';
+                                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
                                 });
 
+                                // Filter only images with duplicate tags and inject count
                                 processed = processed.filter(img => {
-                                    const size = (img.file_size && img.file_size > 0) ? img.file_size : 0;
-                                    const type = img.content_type || 'unknown';
-                                    const key = (size > 0)
-                                        ? `size_${size}_type_${type}`
-                                        : `name_${img.original_filename}`;
-
-                                    return counts[key] > 1;
+                                    const tag = img.tag || 'untagged';
+                                    return tagCounts[tag] > 1;
                                 }).map(img => {
-                                    // Inject count for display
-                                    const size = (img.file_size && img.file_size > 0) ? img.file_size : 0;
-                                    const type = img.content_type || 'unknown';
-                                    const key = (size > 0)
-                                        ? `size_${size}_type_${type}`
-                                        : `name_${img.original_filename}`;
-                                    return { ...img, duplicateCount: counts[key] };
+                                    const tag = img.tag || 'untagged';
+                                    return { ...img, duplicateCount: tagCounts[tag] };
+                                });
+
+                                // Group duplicates together by tag
+                                processed.sort((a, b) => {
+                                    const tagA = a.tag || 'untagged';
+                                    const tagB = b.tag || 'untagged';
+                                    return tagA.localeCompare(tagB);
                                 });
 
                                 if (processed.length === 0) {
-                                    return <div className="text-center text-slate-500 py-10">No potentially duplicate images found.</div>;
+                                    return <div className="text-center text-slate-500 py-10">No duplicate tags found.</div>;
                                 }
                             }
+
 
                             // 3. Render Views
                             if (viewMode === 'grouped' && !showDuplicates) {

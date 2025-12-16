@@ -1,36 +1,6 @@
 [
   {
     "user_id": "user_123",
-    "image_id": "62d6edcc-74e9-4699-adda-d0076c647864-3001767.jpg",
-    "tag": "waste",
-    "description": "Uploaded via web on 12/14/2025",
-    "content_type": "image/jpeg",
-    "s3_key": "62d6edcc-74e9-4699-adda-d0076c647864-3001767.jpg",
-    "upload_time": "2025-12-14T07:17:03.329138",
-    "created_at": "2025-12-14T07:17:03.329138"
-  },
-  {
-    "user_id": "user_123",
-    "image_id": "9bdbb4d4-198f-4f24-afd9-f7ba3083ce5d-istockphoto-1796374503-612x612.jpg",
-    "tag": "uncategorized",
-    "description": "Uploaded via web on 12/14/2025",
-    "content_type": "image/jpeg",
-    "s3_key": "9bdbb4d4-198f-4f24-afd9-f7ba3083ce5d-istockphoto-1796374503-612x612.jpg",
-    "upload_time": "2025-12-14T07:17:35.143418",
-    "created_at": "2025-12-14T07:17:35.143418"
-  },
-  {
-    "user_id": "user_123",
-    "image_id": "45204032-c59e-4770-b8d9-919173b6cd44-pexels-sevenstormphotography-381739.jpg",
-    "tag": "uncategorized",
-    "description": "Uploaded via web on 12/14/2025",
-    "content_type": "image/jpeg",
-    "s3_key": "45204032-c59e-4770-b8d9-919173b6cd44-pexels-sevenstormphotography-381739.jpg",
-    "upload_time": "2025-12-14T07:27:34.017256",
-    "created_at": "2025-12-14T07:27:34.017256"
-  },
-  {
-    "user_id": "user_123",
     "image_id": "24733892-2211-4cce-9e31-fad52c526132-pexels-pixabay-47547.jpg",
     "tag": "uncategorized",
     "description": "Uploaded via web on 12/14/2025",
@@ -214,5 +184,33 @@
     "s3_key": "2025-12-16T08-19-59.151927_00bb768d-2856-4ef0-9698-e96db5883cf9-download.jpeg",
     "upload_time": "2025-12-16T08:19:59.151927",
     "original_filename": "download.jpeg"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "2025-12-16T10-28-04.412647_8d80c268-90c0-452c-aa01-fd9edf60d747-pexels-pixabay-34231.jpg",
+    "tag": "deer",
+    "tags": [
+      "deer"
+    ],
+    "description": "Batch upload on 12/16/2025",
+    "content_type": "image/jpeg",
+    "file_size": 805737,
+    "s3_key": "2025-12-16T10-28-04.412647_8d80c268-90c0-452c-aa01-fd9edf60d747-pexels-pixabay-34231.jpg",
+    "upload_time": "2025-12-16T10:28:04.412647",
+    "original_filename": "pexels-pixabay-34231.jpg"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "2025-12-16T11-00-23.770875_6d97c319-80d9-4d13-b9f8-64489cb58431-pexels-archbob-63330.jpg",
+    "tag": "swan",
+    "tags": [
+      "swan"
+    ],
+    "description": "Batch upload on 12/16/2025",
+    "content_type": "image/jpeg",
+    "file_size": 762323,
+    "s3_key": "2025-12-16T11-00-23.770875_6d97c319-80d9-4d13-b9f8-64489cb58431-pexels-archbob-63330.jpg",
+    "upload_time": "2025-12-16T11:00:23.770875",
+    "original_filename": "pexels-archbob-63330.jpg"
   }
 ]
