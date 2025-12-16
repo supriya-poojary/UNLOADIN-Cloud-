@@ -304,8 +304,8 @@ Get the full CloudBox experience with AWS emulation in **under 5 minutes**:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd UNLOADIN
+git clone https://github.com/supriya-poojary/UNLOADIN-Cloud-
+cd UNLOADIN-Cloud-
 ```
 
 ### 2. Start the Backend (LocalStack)

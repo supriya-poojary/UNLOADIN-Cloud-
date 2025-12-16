@@ -25,6 +25,12 @@ export default function Auth() {
         e.preventDefault();
         setError('');
 
+        // Requirement: Valid Google Account format
+        if (!form.username.trim().endsWith('@gmail.com')) {
+            setError('Enter correct username format');
+            return;
+        }
+
         const storedPassword = localStorage.getItem('demo_password');
 
         // If a password has been set via "Forgot Password", validate against it
@@ -252,6 +258,11 @@ export default function Auth() {
                                         type="text"
                                         required
                                         aria-label="Username"
+                                        value={form.username}
+                                        onChange={(e) => {
+                                            setForm({ ...form, username: e.target.value });
+                                            if (error) setError('');
+                                        }}
                                         className="w-full bg-[#0f172a] border border-white/10 rounded-xl py-3 pl-10 pr-4 focus:ring-2 focus:ring-[#ff7a57] focus:border-transparent outline-none transition-all"
                                         placeholder="Username"
                                     />
