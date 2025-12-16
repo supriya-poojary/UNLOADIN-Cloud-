@@ -182,5 +182,33 @@
     "s3_key": "2025-12-16T06-39-11.078705_603b1c54-24d3-4bcf-9a0e-c82d1ec6a21c-pexels-souvenirpixels-417074.jpg",
     "upload_time": "2025-12-16T06:39:11.078705",
     "original_filename": "pexels-souvenirpixels-417074.jpg"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "2025-12-16T07-16-26.689284_2d1ba68d-f737-488a-bdce-ca3509978e91-pexels-pixabay-162203.jpg",
+    "tag": "tiger",
+    "tags": [
+      "tiger"
+    ],
+    "description": "Batch upload on 12/16/2025",
+    "content_type": "image/jpeg",
+    "file_size": 1593264,
+    "s3_key": "2025-12-16T07-16-26.689284_2d1ba68d-f737-488a-bdce-ca3509978e91-pexels-pixabay-162203.jpg",
+    "upload_time": "2025-12-16T07:16:26.689284",
+    "original_filename": "pexels-pixabay-162203.jpg"
+  },
+  {
+    "user_id": "user_123",
+    "image_id": "2025-12-16T07-29-28.521223_7a9c974d-aa93-4a7b-b270-94f404513825-pexels-pixabay-416179.jpg",
+    "tag": "bird",
+    "tags": [
+      "bird"
+    ],
+    "description": "Batch upload on 12/16/2025",
+    "content_type": "image/jpeg",
+    "file_size": 2213488,
+    "s3_key": "2025-12-16T07-29-28.521223_7a9c974d-aa93-4a7b-b270-94f404513825-pexels-pixabay-416179.jpg",
+    "upload_time": "2025-12-16T07:29:28.521223",
+    "original_filename": "pexels-pixabay-416179.jpg"
   }
 ]

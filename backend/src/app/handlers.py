@@ -191,3 +191,48 @@ def delete_image_handler(event, context):
     except Exception as e:
         logger.error(e)
         return common.create_error_response(500, "Internal Server Error", str(e))
+
+def get_storage_usage_handler(event, context):
+    """
+    GET /usage?user_id=<user_id>
+    Returns total storage usage for a user.
+    """
+    try:
+        query_params = event.get('queryStringParameters', {}) or {}
+        user_id = query_params.get('user_id')
+        
+        if not user_id:
+             return common.create_error_response(400, "Missing user_id")
+
+        # Query all images for the user
+        # Note: In a production system with millions of images, this aggregation should be 
+        # maintained in a separate 'UserStats' table and updated via DynamoDB Streams.
+        # For this scale, a query is acceptable.
+        items = dynamo_utils.query_images(TABLE_NAME, user_id)
+        
+        total_bytes = 0
+        file_count = 0
+        
+        for item in items:
+            # Safely get file_size, default to 0 if missing (backward compatibility)
+            size = item.get('file_size', 0)
+            # Handle potential string storage of numbers
+            if isinstance(size, str) and size.isdigit():
+                size = int(size)
+            elif not isinstance(size, (int, float)):
+                size = 0
+                
+            total_bytes += size
+            file_count += 1
+            
+        return common.create_response(200, {
+            "user_id": user_id,
+            "total_bytes": total_bytes,
+            "total_kb": round(total_bytes / 1024, 2),
+            "total_mb": round(total_bytes / (1024 * 1024), 2),
+            "file_count": file_count
+        })
+
+    except Exception as e:
+        logger.error(e)
+        return common.create_error_response(500, "Internal Server Error", str(e))

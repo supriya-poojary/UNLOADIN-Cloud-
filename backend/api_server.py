@@ -120,9 +120,40 @@ def delete_image(id):
     
     return jsonify(body), response.get('statusCode', 200)
 
+@app.route('/delete', methods=['DELETE', 'OPTIONS'])
+def local_delete():
+    if request.method == 'OPTIONS':
+        return add_cors(make_response('', 204))
+    response = handlers.delete_image_handler(request_to_event(request), None)
+    import json
+    body = response.get('body', '{}')
+    if isinstance(body, str):
+        body = json.loads(body)
+    return add_cors(make_response(jsonify(body), response.get('statusCode', 200)))
+
+@app.route('/usage', methods=['GET', 'OPTIONS'])
+def local_usage():
+    if request.method == 'OPTIONS':
+        return add_cors(make_response('', 204))
+    response = handlers.get_storage_usage_handler(request_to_event(request), None)
+    import json
+    body = response.get('body', '{}')
+    if isinstance(body, str):
+        body = json.loads(body)
+    return add_cors(make_response(jsonify(body), response.get('statusCode', 200)))
+
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({'status': 'healthy'}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    port = int(os.environ.get('PORT', 8000))
+    
+    # In Lite Mode, ensure the local storage dir exists
+    # Check env var string 'true'
+    if os.environ.get('USE_LOCAL_STORAGE') == 'true':
+        # Default path matching local_adapter's expectation or common convention
+        local_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'local_storage')
+        os.makedirs(local_dir, exist_ok=True)
+    
+    app.run(host='0.0.0.0', port=port, debug=True)

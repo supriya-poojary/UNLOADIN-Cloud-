@@ -14,6 +14,15 @@ const FILTER_PRESETS = [
     { name: 'Cool', class: 'hue-rotate-[30deg] contrast-110', css: 'hue-rotate(30deg) contrast(110%)' }
 ];
 
+const formatBytes = (bytes, decimals = 1) => {
+    if (!bytes) return '0 B';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+};
+
 const formatDate = (isoString) => {
     if (!isoString) return 'Unknown Date';
     return new Date(isoString).toLocaleDateString(undefined, {
@@ -325,9 +334,16 @@ export default function Gallery({ refreshTrigger }) {
                             <span className="text-[10px] text-slate-200 bg-black/60 px-2 py-1 rounded-full backdrop-blur-sm shadow-sm mb-1">
                                 {item.tag || '#untagged'}
                             </span>
-                            <span className="text-[9px] text-slate-400 bg-black/40 px-1.5 py-0.5 rounded-sm backdrop-blur-sm">
-                                {formatDate(item.upload_time)}
-                            </span>
+                            <div className="flex gap-1">
+                                <span className="text-[9px] text-slate-400 bg-black/40 px-1.5 py-0.5 rounded-sm backdrop-blur-sm">
+                                    {formatDate(item.upload_time)}
+                                </span>
+                                {item.file_size && (
+                                    <span className="text-[9px] text-slate-400 bg-black/40 px-1.5 py-0.5 rounded-sm backdrop-blur-sm">
+                                        {formatBytes(item.file_size)}
+                                    </span>
+                                )}
+                            </div>
                         </span>
                     </div>
                 </div>
