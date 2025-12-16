@@ -26,10 +26,18 @@ const formatBytes = (bytes, decimals = 1) => {
 
 const formatDate = (isoString) => {
     if (!isoString) return 'Unknown Date';
-    return new Date(isoString).toLocaleDateString(undefined, {
+    // Backend sends naive UTC string (e.g. "2023-10-27T10:00:00.000000")
+    // If we pass this to new Date(), it often parses as Local.
+    // We must ensure it is treated as UTC by appending 'Z' if missing.
+    const safeDate = isoString.endsWith('Z') ? isoString : `${isoString}Z`;
+
+    return new Date(safeDate).toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
     });
 };
 

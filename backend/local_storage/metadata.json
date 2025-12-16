@@ -380,5 +380,19 @@
     "s3_key": "2025-12-16T15-15-30.961228_a0b230e7-cc3d-4e84-bd12-ec4feb974761-3001767.jpg",
     "upload_time": "2025-12-16T15:15:30.961228",
     "original_filename": "3001767.jpg"
+  },
+  {
+    "user_id": "suppi123@gmail.com",
+    "image_id": "2025-12-16T15-36-32.253160Z_ba5e5608-5646-42a4-8a2b-bbf588075392-istockphoto-1796374503-612x612.jpg",
+    "tag": "li",
+    "tags": [
+      "li"
+    ],
+    "description": "Batch upload on 12/16/2025",
+    "content_type": "image/jpeg",
+    "file_size": 35976,
+    "s3_key": "2025-12-16T15-36-32.253160Z_ba5e5608-5646-42a4-8a2b-bbf588075392-istockphoto-1796374503-612x612.jpg",
+    "upload_time": "2025-12-16T15:36:32.253160Z",
+    "original_filename": "istockphoto-1796374503-612x612.jpg"
   }
 ]

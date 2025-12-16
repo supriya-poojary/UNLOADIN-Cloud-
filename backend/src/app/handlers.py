@@ -26,7 +26,7 @@ def generate_upload_url_handler(event, context):
         
         # Metadata logic integrated here for Unified Upload
         # Requirement: "image_id (ISO timestamp based)" so it is sortable for range queries.
-        iso_timestamp = datetime.datetime.utcnow().isoformat()
+        iso_timestamp = datetime.datetime.utcnow().isoformat() + 'Z'
         safe_timestamp = iso_timestamp.replace(':', '-')
         object_name = f"{safe_timestamp}_{uuid.uuid4()}-{filename}"
         
@@ -103,8 +103,8 @@ def save_metadata_handler(event, context):
             'description': description,
             'content_type': content_type,
             's3_key': s3_key or image_id, # Fallback to image_id if not provided
-            'upload_time': datetime.datetime.utcnow().isoformat(), # Renamed from created_at to match requirement
-            'created_at': datetime.datetime.utcnow().isoformat(), # Keep for backward compat
+            'upload_time': datetime.datetime.utcnow().isoformat() + 'Z', # Renamed from created_at to match requirement
+            'created_at': datetime.datetime.utcnow().isoformat() + 'Z', # Keep for backward compat
         }
         # item.update(body) # Explicit fields preferred for strict compliance
 

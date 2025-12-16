@@ -76,6 +76,7 @@
 - ✅ **3D Landing Page**: Animated spheres, particles, and interactive elements
 - ✅ **Batch Upload**: Drag & drop multiple images with per-file progress tracking
 - ✅ **Advanced Gallery**: Real-time grid with direct download, sharing, and backup options
+- ✅ **Metadata Display**: View file size, upload date, year, and precise time (IST) for each image
 - ✅ **Creative Filters**: Apply real-time effects (B&W, Sepia, Vintage) to images
 - ✅ **Tag Management**: Add multiple tags per image
 - ✅ **Responsive Design**: Mobile-first, works on all devices
