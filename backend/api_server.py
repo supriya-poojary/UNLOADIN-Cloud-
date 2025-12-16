@@ -3,7 +3,7 @@ Simple Flask API server for local development.
 This wraps the Lambda handlers to provide HTTP endpoints.
 """
 import datetime
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, make_response
 from flask_cors import CORS
 import os
 import sys
@@ -23,24 +23,36 @@ os.environ.setdefault('TABLE_NAME', 'ImageMetadata')
 os.environ.setdefault('AWS_ENDPOINT_URL', 'http://localstack:4566')
 os.environ.setdefault('USE_LOCAL_STORAGE', 'true') # Default to local storage for easier setup
 
-@app.route('/local-store/<object_name>', methods=['PUT'])
+def add_cors(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'GET,PUT,POST,DELETE,OPTIONS'
+    return response
+
+@app.route('/local-store/<object_name>', methods=['PUT', 'OPTIONS'])
 def local_upload(object_name):
+    if request.method == 'OPTIONS':
+        return add_cors(make_response('', 204))
+    
     content = request.get_data()
     # Ensure it's not a directory traversal attempt (simple check)
     if '..' in object_name or '/' in object_name:
-        return '', 400
+        return add_cors(make_response('', 400))
     local_adapter.save_file_content(object_name, content)
-    return '', 200
+    return add_cors(make_response('', 200))
 
-@app.route('/local-store/<object_name>', methods=['GET'])
+@app.route('/local-store/<object_name>', methods=['GET', 'OPTIONS'])
 def local_download(object_name):
+    if request.method == 'OPTIONS':
+        return add_cors(make_response('', 204))
+
     # Ensure it's not a directory traversal attempt
     if '..' in object_name or '/' in object_name:
-        return '', 400
+        return add_cors(make_response('', 400))
     path = local_adapter.get_file_content(object_name)
     if path:
-        return send_file(path)
-    return '', 404
+        return add_cors(make_response(send_file(path)))
+    return add_cors(make_response('', 404))
 
 @app.route('/images/upload', methods=['POST', 'OPTIONS'])
 def upload_image():

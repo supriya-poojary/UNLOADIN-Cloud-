@@ -2,7 +2,6 @@
 
 ## Project Overview
 **Name**: Cloud-Based Image Upload & Metadata Service
-**Date**: 2023-12-12
 **Status**: Complete
 
 ## Deliverables Checklist

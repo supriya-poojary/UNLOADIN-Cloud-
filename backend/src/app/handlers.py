@@ -26,8 +26,9 @@ def generate_upload_url_handler(event, context):
         
         # Metadata logic integrated here for Unified Upload
         # Requirement: "image_id (ISO timestamp based)" so it is sortable for range queries.
-        timestamp = datetime.datetime.utcnow().isoformat()
-        object_name = f"{timestamp}_{uuid.uuid4()}-{filename}"
+        iso_timestamp = datetime.datetime.utcnow().isoformat()
+        safe_timestamp = iso_timestamp.replace(':', '-')
+        object_name = f"{safe_timestamp}_{uuid.uuid4()}-{filename}"
         
         # S3 Presigned URL
         presigned_url = s3_utils.generate_presigned_upload_url(BUCKET_NAME, object_name)
@@ -53,7 +54,7 @@ def generate_upload_url_handler(event, context):
                 'content_type': body.get('content_type', 'application/octet-stream'),
                 'file_size': body.get('file_size', 0),
                 's3_key': object_name,
-                'upload_time': timestamp,
+                'upload_time': iso_timestamp,
                 'original_filename': filename
             }
             

@@ -267,9 +267,39 @@ Before you begin, ensure you have the following installed:
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Lite Mode)
 
-Get CloudBox running in **under 5 minutes**:
+For a quick test without Docker/LocalStack, you can run the app using the local Python server (saves files to `backend/local_storage`) and the standard Vite dev server.
+
+### Windows Users
+Simply run the helper script in PowerShell to start both the backend and frontend automatically:
+```powershell
+.\start_app.ps1
+```
+
+### Manual Start
+
+#### 1. Start Backend
+```bash
+cd backend
+pip install -r requirements.txt
+python api_server.py
+# Backend runs at http://localhost:8000
+```
+
+#### 2. Start Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+# Frontend runs at http://localhost:5173
+```
+
+---
+
+## 🐳 Quick Start (Docker/LocalStack)
+
+Get the full CloudBox experience with AWS emulation in **under 5 minutes**:
 
 ### 1. Clone the Repository
 
