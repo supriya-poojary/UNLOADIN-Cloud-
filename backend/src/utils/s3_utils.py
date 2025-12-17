@@ -17,7 +17,9 @@ import os
 def generate_presigned_upload_url(bucket_name, object_name, expiration=3600):
     """Generate a presigned URL to upload a file to S3."""
     if os.environ.get('USE_LOCAL_STORAGE'):
-        return local_adapter.generate_local_upload_url('http://localhost:8000', object_name)
+        # Use configured API URL or Render's default external URL, falling back to localhost
+        host_url = os.environ.get('API_BASE_URL') or os.environ.get('RENDER_EXTERNAL_URL') or 'http://localhost:8000'
+        return local_adapter.generate_local_upload_url(host_url, object_name)
 
     s3_client = get_s3_client()
     try:
@@ -33,7 +35,8 @@ def generate_presigned_upload_url(bucket_name, object_name, expiration=3600):
 def generate_presigned_download_url(bucket_name, object_name, expiration=3600):
     """Generate a presigned URL to download a file from S3."""
     if os.environ.get('USE_LOCAL_STORAGE'):
-        return local_adapter.generate_local_download_url('http://localhost:8000', object_name)
+        host_url = os.environ.get('API_BASE_URL') or os.environ.get('RENDER_EXTERNAL_URL') or 'http://localhost:8000'
+        return local_adapter.generate_local_download_url(host_url, object_name)
 
     s3_client = get_s3_client()
     try:
