@@ -16,16 +16,9 @@
 | Service | URL |
 |---------|-----|
 | **Frontend** | [Search & Gallery App (Netlify)](https://unloadin-cloud.netlify.app) |
-| **Backend** | [API Server (Render)](https://unloadin-cloud-1.onrender.com) |
+| **Backend** | [API Server (Render)](https://unloadin-cloud-1.onrender.com/health) |
 
 > **Note**: The backend on Render builds may take ~50 seconds to spin up from sleep.
-
-
-
-> **Instructions**:
-> 1. Upload your screen recording to Google Drive.
-> 2. Right-click the video > Share > Change to "**Anyone with the link**".
-> 3. Copy the link and replace `INSERT_YOUR_DRIVE_LINK_HERE` above.
 
 ## 📋 Table of Contents
 
