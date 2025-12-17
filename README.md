@@ -19,7 +19,7 @@
 | Service | URL |
 |---------|-----|
 | **Frontend** | [Search & Gallery App (Netlify)](https://unloadin-cloud.netlify.app) |
-| **Backend** | [API Server (Render)](https://unloadin-cloud-1.onrender.com) |
+| **Backend** | [API Server (Render)](https://unloadin-cloud-1.onrender.com/health) |
 
 > **Note**: The backend on Render builds may take ~50 seconds to spin up from sleep.
 
