@@ -6,6 +6,11 @@
 ![React](https://img.shields.io/badge/React-18.3-blue)
 ![Python](https://img.shields.io/badge/Python-3.8%2B-green)
 
+## 🎥 Demo Video
+
+[▶️ **Watch Project Demo (Google Drive)**](https://drive.google.com/file/d/1lpGKfc4aRxn2B0eBpnMiB8luCEsWZ0T5/view?usp=drivesdk)
+
+
 ## 🚀 Live Demo
 
 | Service | URL |
@@ -15,9 +20,7 @@
 
 > **Note**: The backend on Render builds may take ~50 seconds to spin up from sleep.
 
-## 🎥 Demo Video
 
-[▶️ **Watch Project Demo (Google Drive)**](INSERT_YOUR_DRIVE_LINK_HERE)
 
 > **Instructions**:
 > 1. Upload your screen recording to Google Drive.
